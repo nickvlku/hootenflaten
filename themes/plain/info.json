@@ -1,0 +1,8 @@
+{
+    "application": "hootenflaten",
+    "identifier": "plain",
+    "name": "Plain",
+    "author": "Nick Vlku",
+    "license": "MIT/X11",
+    "description": "Bootstrap inspired theme."
+}

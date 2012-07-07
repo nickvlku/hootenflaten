@@ -1,0 +1,173 @@
+{% load kwacros %}
+{% loadkwacros "communly/macros.html" %}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+
+</head>
+<meta charset="utf-8">
+<title>StuyBay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- Le styles -->
+<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet">
+<style type="text/css">
+    body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+    }
+    .sidebar-nav {
+        padding: 9px 0;
+    }
+</style>
+<link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
+
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="#">Stuy Bay Alumni</a>
+            <div class="btn-group pull-right">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    <img src="https://graph.facebook.com/408374/picture" height="18" width="18"/> Nick Vlku
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Profile</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Sign Out</a></li>
+                </ul>
+            </div>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#about">People</a></li>
+                    <li><a href="#contact">Calendar</a></li>
+                    <li><a href="#about">Posts</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2">
+        </div>
+        <div class="span8">
+            <h1>Hey {{ auth.first_name }}! </h1>
+            <h3>Before we continue, does this all look good?</h3>
+            <br/>
+            <form class="form-horizontal bbq" id="confirm_form"  method="POST" action="/i/fb/complete">{% csrf_token %}
+                <div class="row-fluid">
+                    <div class="span3">
+                        <ul class="thumbnails">
+                            <li class="span12">
+                                <div class="thumbnail">
+                                    <img src="http://graph.facebook.com/{{ auth.service_id }}/picture?type=large"/>
+                                    <div class="caption">
+                                        <h5>Your Facebook Profile Picture</h5>
+                                        <p>This is your current Facebook profile picture.  You can use another one if you want!</p>
+                                        <p style="text-align: center"><a href="#" class="btn">Change</a></p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="span7 well" >
+
+                        <span class="step" id="first">
+
+
+                            <fieldset>
+                                <div style="text-align: right">Step 1 of 2</div>
+
+                                <legend>Your Info from Facebook</legend>
+                                {% usekwacro formelement "First Name" "first_name" form.first_name errors %}
+                                {% usekwacro formelement "Last Name" "last_name" form.last_name errors %}
+                                {% usekwacro formelement "User Name" "username" form.username  errors %}
+                                {% usekwacro formelement "Email Address" "email_address" form.email_address errors add_on="icon-envelope" %}
+
+                            </fieldset>
+
+                            <div class="form-actions">
+                            </div>
+
+        				</span>
+
+                        <span class="step0_form_actions" id="second">
+
+
+                            <fieldset>
+                                <div style="text-align: right">Step 2 of 2</div>
+
+                                <legend>Your fasfsfas from Facebook</legend>
+                                {% usekwacro formelement "What year were you?" "class_year" form.first_name errors %}
+                                {% usekwacro formelement "Where did you live while at Stuy?" "home_town" form.last_name errors %}
+                                {% usekwacro formelement "Where do you live now?" "current_town" form.username  errors %}
+
+                            </fieldset>
+                            <div class="step1_form_actions">
+                            </div>
+
+        				</span>
+
+
+                        <div class="form-actions">
+                            <button type="submit" id="SaveAccount" class="btn btn-success">Looks great! >></button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="span2"></div>
+
+    </div><!--/containers-->
+
+
+    <hr>
+
+    <footer>
+        <p>&copy; Stuyvesant High School Bay Area Alumni Association 2012 | Powered by Commune.ly</p>
+    </footer>
+
+</div><!--/.fluid-container-->
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/jquery-ui-1.8.5.custom.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/jquery.form.wizard.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/jquery.form.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/jquery.validate.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/formToWizard.js"></script>
+
+<script src="{{ STATIC_URL }}bootstrap/js/bootstrap-button.js"></script>
+<script src="{{ STATIC_URL }}bootstrap/js/bootstrap-dropdown.js"></script>
+
+<script type="text/javascript">
+    $(function(){
+        $("#confirm_form").formToWizard({ submitButton: 'SaveAccount' })
+    });
+</script>
+</body>
+</html>
