@@ -7,10 +7,16 @@ from flask.ext.security import (User, Security, LoginForm,  login_required,
 from flask.ext.security.datastore.sqlalchemy import SQLAlchemyUserDatastore
 
 from flaskext.themes import setup_themes, load_themes_from, packaged_themes_loader, theme_paths_loader
+from base.extensions import init_extensions
+
 
 app = Flask(__name__)
 app.config.from_object('base.default_settings.Config')
 
+db = SQLAlchemy(app)
+Security(app, SQLAlchemyUserDatastore(db))
+
+init_extensions(app)
 
 def instance_loader(app):
     base_app_path = os.path.split(app.root_path)[0]
@@ -29,8 +35,6 @@ try:
 except RuntimeError:
 	app.logger.warning("You have not specified a COMMUNLY_SETTINGS environment variable.  You have no overrides from the default")
 
-db = SQLAlchemy(app)
-Security(app, SQLAlchemyUserDatastore(db))
 
 import base.views
 import base.models

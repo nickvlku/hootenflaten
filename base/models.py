@@ -4,6 +4,7 @@ import uuid
 from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.types import Boolean
 
 from base import db
 
@@ -18,6 +19,7 @@ class HootenflattenBaseObject(object):
     
     def __init__(self):
         self.id = uuid.uuid4()
+        self.created_at = datetime.datetime.utcnow()
 
 class Comment(db.Model, HootenflattenBaseObject):
     __tablename__ = "comment"
@@ -27,6 +29,9 @@ class Comment(db.Model, HootenflattenBaseObject):
     user_id = Column(Integer, ForeignKey('user.id'))
     
     user = relationship("User")
+
+    def __repr__(self):
+        return "<Comment: %r - %r>" % (self.comment, self.user_id)
 
 class IsCommentableMixin(object):
 
@@ -41,3 +46,14 @@ class IsCommentableMixin(object):
         )
         return relationship(Comment, secondary=comment_association, backref="%s_parents" % cls.__name__.lower())
 
+class Extension(db.Model):
+    __tablename__ = 'extensions'
+
+    id = Column(Integer, primary_key=True)
+    extension_name = Column(String(200))
+    configured = Column(Boolean)
+
+    def __repr__(self):
+        return "<Extension: %r - Configured: %r>" % (self.extension_name, self.configured)
+
+db.create_all()

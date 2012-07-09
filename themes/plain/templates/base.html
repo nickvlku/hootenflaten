@@ -2,14 +2,14 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
 
-</head>
+{%block head %}
 <meta charset="utf-8">
-<title>StuyBay</title>
+<title>{% block title %}{% block site_title %}StuyBay {% endblock %} {% block page_title %} {% endblock %} {% endblock %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
-<meta name="author" content="">
+<meta name="description" content="{% block site_description%}{%endblock%}">
+<meta name="author" content="{% block author%}{%endblock%}">
 
-<!-- Le styles -->
+{% block css_head %}
 <link href="{{ theme_static('bootstrap/css/bootstrap.css') }}" rel="stylesheet">
 <style type="text/css">
     body {
@@ -20,16 +20,18 @@
         padding: 9px 0;
     }
 </style>
-<link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-
+<link href="{{ theme_static('bootstrap/css/bootstrap-responsive.css') }}" rel="stylesheet">
 <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+{% endblock %}
 
+{% endblock %}
 </head>
 <body>
-
+{% block body %}
+{% block nav_menu %}
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container-fluid">
@@ -62,7 +64,8 @@
         </div>
     </div>
 </div>
-
+{% endblock %}
+{% block main_content %}
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12">
@@ -75,7 +78,9 @@
                             please sign up and reconnect! </p>
                         <p>
                             <a class="btn btn-primary btn-large">Sign up directly &raquo;</a>
-                            <a class="btn btn-primary btn-large" href="{{  FACEBOOK_URL }}">Sign up via Facebook&raquo;</a>
+                            {% if facebook_enabled %}
+                            <a class="btn btn-primary btn-large" href="{{ facebook_url }}">Sign up via Facebook&raquo;</a>
+                            {% endif %}
                         </p>
                     </div>
                     <div class="span5">
@@ -225,7 +230,7 @@
 
     </div><!--/containers-->
 
-
+    {% endblock %}
     <hr>
 
     <footer>
@@ -234,11 +239,14 @@
 
 </div><!--/.fluid-container-->
 
+{% block bottom_javascript %}
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script src="{{ theme_static('bootstrap/js/bootstrap-button.js') }}"/></script>
-<script src="{{ theme_static('bootstrap/js/bootstrap-dropdown.js') }}/></script>
+<script src="{{ theme_static('bootstrap/js/bootstrap-dropdown.js') }}"/></script>
+{% endblock %}
+{% endblock %}
 </body>
 </html>

@@ -1,6 +1,5 @@
-{% load kwacros %}
-{% load hash %}
-{% kwacro formelement pretty_name field_name field_value errors add_on=None %}
+{% macro input(pretty_name='', field_name, field_value, errors={}, add_on=None) -%}
+
 
 <div class="control-group {% if field_name in errors %}error{% endif %}">
     <label class="control-label" for="{{ field_name }}">{{ pretty_name }}</label>
@@ -13,10 +12,10 @@
             <input type="text" class="input-medium" id="{{ field_name }}" name="{{ field_name }}" value="{{ field_value }}">
         {% endif %}
         {% if field_name in errors %}
-            <span class="help-inline">{{ errors|hash:field_name }}</span>
+            <span class="help-inline">{{ errors[field_name] }}</span>
         {% endif %}
 
     </div>
 </div>
 
-{% endkwacro %}
+{%- endmacro %}

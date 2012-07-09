@@ -1,0 +1,95 @@
+{% extends theme('base.html', false) %}
+{% from theme('macros.html', false) import input %})
+{% block page_title %}Confirm your Facebook Credentials{% endblock %}
+
+{% block main_content %}
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2">
+        </div>
+        <div class="span8">
+            <h1>Hey </h1>
+            <h3>Before we continue, does this all look good?</h3>
+            <br/>
+            <form class="form-horizontal bbq" id="confirm_form"  method="POST" action="/i/fb/complete">
+                <div class="row-fluid">
+                    <div class="span3">
+                        <ul class="thumbnails">
+                            <li class="span12">
+                                <div class="thumbnail">
+                                    <img src="http://graph.facebook.com/31337/picture?type=large"/>
+                                    <div class="caption">
+                                        <h5>Your Facebook Profile Picture</h5>
+                                        <p>This is your current Facebook profile picture.  You can use another one if you want!</p>
+                                        <p style="text-align: center"><a href="#" class="btn">Change</a></p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="span7 well" >
+
+                        <span class="step" id="first">
+
+
+                            <fieldset>
+                                <div style="text-align: right">Step 1 of 2</div>
+
+                                <legend>Your Info from Facebook</legend>
+                                {{ input("First Name", "first_name", "Nick") }}
+
+                            </fieldset>
+
+                            <div class="form-actions">
+                            </div>
+
+        				</span>
+
+                        <span class="step0_form_actions" id="second">
+
+
+                            <fieldset>
+                                <div style="text-align: right">Step 2 of 2</div>
+
+                                <legend>Your fasfsfas from Facebook</legend>
+
+                            </fieldset>
+                            <div class="step1_form_actions">
+                            </div>
+
+        				</span>
+
+
+                        <div class="form-actions">
+                            <button type="submit" id="SaveAccount" class="btn btn-success">Looks great! >></button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="span2"></div>
+
+    </div><!--/containers-->
+
+{% endblock %}
+
+{% block bottom_javascript %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="{{ theme_static('bootstrap/js/jquery-ui-1.8.5.custom.min.js') }}"></script>
+<script type="text/javascript" src="{{ theme_static('bootstrap/js/jquery.form.wizard.js') }}"></script>
+<script type="text/javascript" src="{{ theme_static('bootstrap/js/jquery.form.js') }}"></script>
+<script type="text/javascript" src="{{ theme_static('bootstrap/js/jquery.validate.js') }}"></script>
+<script type="text/javascript" src="{{ theme_static('bootstrap/js/formToWizard.js') }}"></script>
+
+<script src="{{ theme_static('bootstrap/js/bootstrap-button.js') }}"></script>
+<script src="{{ theme_static('bootstrap/js/bootstrap-dropdown.js') }}"></script>
+
+<script type="text/javascript">
+    $(function(){
+        $("#confirm_form").formToWizard({ submitButton: 'SaveAccount' })
+    });
+</script>
+{% endblock %}
