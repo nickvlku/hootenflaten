@@ -1,4 +1,4 @@
-from base import db, app
+from base import app
 from base.models import Extension
 from flask.blueprints import Blueprint
 

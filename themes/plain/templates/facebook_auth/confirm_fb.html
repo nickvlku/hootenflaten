@@ -36,8 +36,10 @@
                             <fieldset>
                                 <div style="text-align: right">Step 1 of 2</div>
 
-                                <legend>Your Info from Facebook</legend>
-                                {{ input("First Name", "first_name", "Nick") }}
+                                <legend>Your Info from Facebook </legend>
+                                {{ input("First Name", "first_name", facebook_user.first_name ) }}
+                                {{ input("Last Name", "last_name", facebook_user.last_name) }}
+                                {{ input("Email Address", "email_address", facebook_user.email,add_on="icon-envelope") }}
 
                             </fieldset>
 

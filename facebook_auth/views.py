@@ -1,12 +1,14 @@
+import json
 import urllib
 import urlparse
 import requests
 
-from base import app
+from base import app, db
 
 from flask import request
 from flask.helpers import url_for
 from facebook_auth import facebook_auth
+from facebook_auth.models import FacebookUser
 from site_configuration.themes import render
 
 @facebook_auth.route('/complete', methods=['GET'])
@@ -30,7 +32,21 @@ def bounceback_get():
         access_token = response["access_token"][-1]
         ac = str(access_token)
         app.logger.info("Got access token %s" % ac)
+        detail_request = "https://graph.facebook.com/me?" + urllib.urlencode(dict(access_token=ac))
+        detail_request_response = requests.get(detail_request).text
+        user_details = json.loads(detail_request_response)
+        auth = FacebookUser.query.filter_by(facebook_id=user_details.get('id')).first()
+        if auth is None:
+            auth = FacebookUser(access_token = ac,
+                                first_name = user_details.get('first_name'),
+                                last_name = user_details.get('last_name'),
+                                facebook_id = user_details.get('id'),
+                                user_name = user_details.get('username'),
+                                email = user_details.get('email'))
+            db.session.add(auth)
+            db.session.commit()
 
+        return render('facebook_auth/confirm_fb.html', facebook_user=auth)
 
     except Exception, e:
         app.logger.error("Error getting facebook access token: %s" % (e))
