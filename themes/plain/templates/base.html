@@ -4,14 +4,15 @@
 
 {%block head %}
 <meta charset="utf-8">
-<title>{% block title %}{% block site_title %}StuyBay {% endblock %} {% block page_title %} {% endblock %} {% endblock %}</title>
+<title>{% block title %}{% block site_title %}{{config.SITE_SETTINGS.SHORT_NAME}}{% endblock %} {% block page_title %} {% endblock %} {% endblock %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="{% block site_description%}{%endblock%}">
 <meta name="author" content="{% block author%}{%endblock%}">
 
 {% block css_head %}
 <link href="{{ theme_static('bootstrap/css/bootstrap.css') }}" rel="stylesheet">
-<style type="text/css">
+<link href="{{ theme_static('bootstrap/css/custom-theme/jquery-ui-1.8.16.custom.css') }}" rel="stylesheet">
+    <style type="text/css">
     body {
         padding-top: 60px;
         padding-bottom: 40px;
@@ -40,7 +41,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="#">Stuy Bay Alumni</a>
+            <a class="brand" href="#">{{config.SITE_SETTINGS.SHORT_NAME}}</a>
             <div class="btn-group pull-right">
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                     <img src="https://graph.facebook.com/408374/picture" height="18" width="18"/> Nick Vlku
@@ -65,8 +66,9 @@
     </div>
 </div>
 {% endblock %}
-{% block main_content %}
 <div class="container-fluid">
+    {% block main_content %}
+
     <div class="row-fluid">
         <div class="span12">
             <div class="hero-unit">
@@ -229,13 +231,16 @@
         </div><!--/row-->
 
     </div><!--/containers-->
-
     {% endblock %}
+
     <hr>
 
+    {% block footer %}
     <footer>
-        <p>&copy; Stuyvesant High School Bay Area Alumni Association 2012 | Powered by Hootenflaten</p>
+        <p>&copy; {{config.SITE_SETTINGS.FULL_NAME}} 2012 | Powered by Hootenflaten</p>
     </footer>
+    {% endblock footer %}
+
 
 </div><!--/.fluid-container-->
 

@@ -1,21 +1,17 @@
 {% macro input(pretty_name='', field_name, field_value, errors={}, add_on=None) -%}
-
-
-<div class="control-group {% if field_name in errors %}error{% endif %}">
+<div class="control-group{% if field_name in errors -%} error{%- endif %}">
     <label class="control-label" for="{{ field_name }}">{{ pretty_name }}</label>
     <div class="controls">
-        {% if add_on %}
+        {% if add_on -%}
             <div class="input-prepend">
-                <span class="add-on"><i class="{{ add_on }}"></i></span><input type="text" class="input-medium" id="email_address" name="email_address" value="{{ field_value }}">
+                <span class="add-on"><i class="{{ add_on }}"></i></span><input type="text" class="input-large" id="email_address" name="email_address" value="{{ field_value }}">
             </div>
         {% else %}
-            <input type="text" class="input-medium" id="{{ field_name }}" name="{{ field_name }}" value="{{ field_value }}">
-        {% endif %}
-        {% if field_name in errors %}
+            <input type="text" class="input-xlarge" id="{{ field_name }}" name="{{ field_name }}" value="{{ field_value }}">
+        {%- endif %}
+        {% if field_name in errors -%}
             <span class="help-inline">{{ errors[field_name] }}</span>
-        {% endif %}
-
+        {%- endif %}
     </div>
 </div>
-
 {%- endmacro %}

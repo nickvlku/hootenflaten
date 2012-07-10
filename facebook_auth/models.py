@@ -1,8 +1,5 @@
-import uuid
-
-from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table, Text
+from sqlalchemy import Column, DateTime, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declared_attr
 
 from base import db
 from base.models import HootenflattenBaseObject

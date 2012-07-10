@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table, Text
+from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table, Text, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.types import Boolean
@@ -52,6 +52,7 @@ class Extension(db.Model):
     id = Column(Integer, primary_key=True)
     extension_name = Column(String(200))
     configured = Column(Boolean)
+    version = Column(Float)
 
     def __repr__(self):
         return "<Extension: %r - Configured: %r>" % (self.extension_name, self.configured)

@@ -9,16 +9,18 @@
         <div class="span2">
         </div>
         <div class="span8">
-            <h1>Hey </h1>
+            <h1>Hey {{facebook_user.first_name}}!</h1>
             <h3>Before we continue, does this all look good?</h3>
             <br/>
-            <form class="form-horizontal bbq" id="confirm_form"  method="POST" action="/i/fb/complete">
                 <div class="row-fluid">
+
                     <div class="span3">
+                        <form class="form-horizontal" id="confirm_form"  method="POST" action="/i/fb/complete">
+
                         <ul class="thumbnails">
                             <li class="span12">
                                 <div class="thumbnail">
-                                    <img src="http://graph.facebook.com/31337/picture?type=large"/>
+                                    <img src="http://graph.facebook.com/{{facebook_user.facebook_id}}/picture?type=large"/>
                                     <div class="caption">
                                         <h5>Your Facebook Profile Picture</h5>
                                         <p>This is your current Facebook profile picture.  You can use another one if you want!</p>
@@ -27,47 +29,47 @@
                                 </div>
                             </li>
                         </ul>
-                    </div>
-                    <div class="span7 well" >
+                        </form>
 
-                        <span class="step" id="first">
+                    </div>
+                    <div class="span7 well" id="example-1" >
+                    <form method="POST" id="wrapped" class="form-horizontal">
+                        <div class="step">
 
 
                             <fieldset>
                                 <div style="text-align: right">Step 1 of 2</div>
 
                                 <legend>Your Info from Facebook </legend>
-                                {{ input("First Name", "first_name", facebook_user.first_name ) }}
-                                {{ input("Last Name", "last_name", facebook_user.last_name) }}
-                                {{ input("Email Address", "email_address", facebook_user.email,add_on="icon-envelope") }}
+{{ input("First Name", "first_name", facebook_user.first_name ) }}
+{{ input("Last Name", "last_name", facebook_user.last_name) }}
+{{ input("Email Address", "email_address", facebook_user.email) }}
 
                             </fieldset>
 
-                            <div class="form-actions">
-                            </div>
 
-        				</span>
+                        </div>
 
-                        <span class="step0_form_actions" id="second">
-
+                        <div class="step">
 
                             <fieldset>
-                                <div style="text-align: right">Step 2 of 2</div>
+                            <div style="text-align: right">Step 2 of 2</div>
 
-                                <legend>Your fasfsfas from Facebook</legend>
-
+                            <legend>Custom Questions </legend>
+                            {{ input("Stuyvesant Class Year", "custom_class_year" ) }}
+                            {{ input("Current Location", "location") }}
+                            {{ input("What you're up to?", "location") }}
                             </fieldset>
-                            <div class="step1_form_actions">
-                            </div>
-
-        				</span>
-
-
-                        <div class="form-actions">
-                            <button type="submit" id="SaveAccount" class="btn btn-success">Looks great! >></button>
                         </div>
 
 
+                        <div class="navigation" style="text-align: right">
+                            <button type="submit" name="backward" class="backward btn btn-danger">Back</button>
+                            <button type="button" name="forward" id="forward" class="forward btn btn-success">Next</button>
+                            <button type="submit" id="SaveAccount" name="process" class="btn btn-success submit">Done</button>
+                        </div>
+
+                    </form>
                     </div>
                 </div>
             </form>
@@ -80,8 +82,8 @@
 
 {% block bottom_javascript %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<script type="text/javascript" src="{{ theme_static('bootstrap/js/jquery-ui-1.8.5.custom.min.js') }}"></script>
-<script type="text/javascript" src="{{ theme_static('bootstrap/js/jquery.form.wizard.js') }}"></script>
+<script type="text/javascript" src="{{ theme_static('bootstrap/js/jquery-ui-1.8.21.custom.min.js') }}"></script>
+<script type="text/javascript" src="{{ theme_static('bootstrap/js/jquery.wizard.js') }}"></script>
 <script type="text/javascript" src="{{ theme_static('bootstrap/js/jquery.form.js') }}"></script>
 <script type="text/javascript" src="{{ theme_static('bootstrap/js/jquery.validate.js') }}"></script>
 <script type="text/javascript" src="{{ theme_static('bootstrap/js/formToWizard.js') }}"></script>
@@ -91,7 +93,48 @@
 
 <script type="text/javascript">
     $(function(){
-        $("#confirm_form").formToWizard({ submitButton: 'SaveAccount' })
+        $("#progressbar").progressbar();
+        $("#SaveAccount").hide();
+
+        $("#example-1").wizard({
+            stepsWrapper: "#wrapped",
+            submit: ".submit",
+            animations: {
+                show: {
+                    options: {
+                        duration: 0
+                    },
+                    properties: {
+                        opacity: "show"
+                    }
+                },
+                hide: {
+                    options: {
+                        duration: 0
+                    },
+                    properties: {
+                        opacity: "hide"
+                    }
+                }
+            },
+            afterSelect: function( event, state) {
+                if (state.stepsRemaining == 0) {
+                    $("#SaveAccount").show();
+                    $("#forward").hide();
+                    $("#SaveAccount").enable();
+                } else {
+                    $("#SaveAccount").hide();
+                    $("#forward").show();
+
+                }
+            }
+
+         }).wizard('form').submit(function( event ) {
+                    event.preventDefault();
+                    alert('Form submitted!');
+
+         });
+
     });
 </script>
 {% endblock %}
