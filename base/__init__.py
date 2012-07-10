@@ -14,7 +14,14 @@ app = Flask(__name__)
 app.config.from_object('base.default_settings.Config')
 
 db = SQLAlchemy(app)
-Security(app, SQLAlchemyUserDatastore(db))
+
+class UserAccountMixin():
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
+    custom_questions_json = db.Column(db.Text)
+    ran_through_first_run_wizard = db.Column(db.Boolean)
+
+Security(app, SQLAlchemyUserDatastore(db, UserAccountMixin))
 
 init_extensions(app)
 

@@ -7,6 +7,7 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.types import Boolean
 
 from base import db
+from base.custom_sql_fields import ChoiceType, JSONEncodedDict
 
 class HootenflattenBaseObject(object):
 
@@ -56,5 +57,26 @@ class Extension(db.Model):
 
     def __repr__(self):
         return "<Extension: %r - Configured: %r>" % (self.extension_name, self.configured)
+
+class CustomQuestion(db.Model):
+    __tablename__ = 'custom_questions'
+    id = Column(Integer, primary_key=True)
+    position = Column(Integer)
+    question = Column(Text)
+    validators = Column(JSONEncodedDict(255))  # ex: ['Required', 'Email']
+    choices = Column(JSONEncodedDict(255)) # ex: [(1,'Hello'),(2,'GoodBye')]
+    widget = Column(ChoiceType((
+                         ("TextField","TextField"),
+                         ("TextAreaField", "TextAreaField"),
+                         ("BooleanField", "BooleanField"),
+                         ("DateField", "DateField"),
+                         ("DateTimeField", "DateTimeField"),
+                         ("Floatfield", "FloatField"),
+                         ("IntegerField", "IntegerField"),
+                         ("RadioField", "RadioField"),
+                         ("SelectField", "SelectField"),
+                         ("SelectMultipleField","SelectMultipleField")
+                        )))
+
 
 db.create_all()

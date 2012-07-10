@@ -12,6 +12,7 @@ from flask_login import login_required
 
 from facebook_auth import facebook_auth
 from facebook_auth.models import FacebookUser
+from facebook_auth.forms import FacebookRegistrationForm
 
 @facebook_auth.route('/complete', methods=['GET'])
 def bounceback_get():
@@ -38,7 +39,7 @@ def bounceback_get():
         if 'fb_auth' in session:
             # refresh the access token
             auth = FacebookUser.query.filter_by(id=session['fb_auth']).first()
-            if auth.access_token != ac:
+            if auth is not None and auth.access_token != ac:
                 auth.access_token = ac
                 db.session.add(auth)
                 db.session.commit()
@@ -60,7 +61,11 @@ def bounceback_get():
             login_user(auth.user, force=True)
 
         session['fb_auth'] = auth.id
-        return render('facebook_auth/confirm_fb.html', facebook_user=auth)
+        registration_form = FacebookRegistrationForm( first_name = auth.first_name,
+                                        last_name = auth.last_name,
+                                        email = auth.email )
+
+        return render('facebook_auth/confirm_fb.html', facebook_user=auth, form=registration_form)
 
     except Exception, e:
         current_app.logger.exception("Error getting facebook access token: %s" % e)
@@ -69,7 +74,7 @@ def bounceback_get():
     return render('facebook_auth/confirm_fb.html')
 
 @facebook_auth.route('/complete', methods=['POST'])
-def bounceback_post():
+def complete():
     pass
 
 @login_required
