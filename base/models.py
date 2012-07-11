@@ -62,6 +62,7 @@ class CustomQuestion(db.Model):
     __tablename__ = 'custom_questions'
     id = Column(Integer, primary_key=True)
     position = Column(Integer)
+    name = Column(String(50))
     question = Column(Text)
     validators = Column(JSONEncodedDict(255))  # ex: ['Required', 'Email']
     choices = Column(JSONEncodedDict(255)) # ex: [(1,'Hello'),(2,'GoodBye')]
