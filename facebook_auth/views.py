@@ -1,13 +1,15 @@
 import json
 import urllib
 import urlparse
+import datetime
 import requests
 
 from base import db
 from site_configuration.themes import render
 
-from flask import request, g, session, abort, current_app, url_for, redirect
+from flask import request, g, session, abort, current_app, url_for, redirect, flash
 from flask.ext.login import login_user, current_user
+from flask.ext.security import user_datastore
 from flask_login import login_required
 
 from facebook_auth import fb_auth
@@ -26,13 +28,41 @@ def register_facebook_account():
 
 @fb_auth.route('/register', methods=['POST'])
 def register_facebook_account_post():
-    auth_id = session['fb_auth']
     registration_form = FacebookRegistrationForm(request.form)
-    try:
-        registration_form.validate()
-    except:
-        return "BAD!"
-    return "YOU DID IT!"
+    registration_form.validate()
+    pw = registration_form.password.data
+
+    u = user_datastore.create_user(
+        username=registration_form.email.data,
+        email=registration_form.email.data,
+        password=registration_form.password.data,
+        active=True)
+
+    u.created_at=datetime.datetime.utcnow()
+    u.modified_at=datetime.datetime.utcnow()
+
+    u.first_name=registration_form.first_name.data
+    u.last_name=registration_form.last_name.data
+    u.ran_through_first_run_wizard=False
+    custom_questions = dict()
+    for c in registration_form.custom_fields():
+        custom_questions[c.id] = c.data
+
+    u.custom_questions_json = custom_questions
+    auth = FacebookUser.query.filter_by(id=session['fb_auth']).first()
+
+    u.profile_image = 'https://graph.facebook.com/%s/picture' % auth.facebook_id
+
+    auth.user = u
+    db.session.add(u)
+    db.session.add(auth)
+    db.session.commit()
+    if auth.user is not None:
+        g.user = auth.user
+        login_user(auth.user, force=True)
+        flash('You were successfully logged in')
+
+    return redirect(url_for('front_page'))
 
 @fb_auth.route('/complete', methods=['GET'])
 def bounceback_get():

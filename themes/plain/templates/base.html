@@ -42,17 +42,23 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand" href="#">{{config.SITE_SETTINGS.SHORT_NAME}}</a>
+            {% if current_user.is_authenticated() %}
             <div class="btn-group pull-right">
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                    <img src="https://graph.facebook.com/408374/picture" height="18" width="18"/> Nick Vlku
+                    <img src="{{current_user.profile_image}}" height="18" width="18"/> {{current_user.full_name}}
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     <li><a href="#">Profile</a></li>
                     <li class="divider"></li>
-                    <li><a href="#">Sign Out</a></li>
+                    <li><a href="{{url_for('auth.logout')}}">Sign Out</a></li>
                 </ul>
             </div>
+            {% else %}
+            <div class="btn-group pull-right">
+                <a class="btn" href="#">Login</a>
+            </div>
+            {% endif %}
             <div class="nav-collapse">
                 <ul class="nav">
                     <li class="active"><a href="#">Home</a></li>
@@ -67,6 +73,28 @@
 </div>
 {% endblock %}
 <div class="container-fluid">
+    {% block flash_content %}
+    {% with flash = get_flashed_messages() %}
+
+    {% if flash %}
+    <div class="row-fluid">
+        <div class="span3">
+
+        </div>
+        <div class="span6">
+            <div class="alert alert-success" id="flash">
+                <button class="close" data-dismiss="alert">×</button>
+                You've successfully logged in.
+            </div>
+        </div>
+        <div class="span3">
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% endblock %}
+
     {% block main_content %}
 
     <div class="row-fluid">
@@ -251,6 +279,8 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script src="{{ theme_static('bootstrap/js/bootstrap-button.js') }}"/></script>
 <script src="{{ theme_static('bootstrap/js/bootstrap-dropdown.js') }}"/></script>
+<script src="{{ theme_static('bootstrap/js/bootstrap-alert.js') }}"/></script>
+
 {% endblock %}
 {% endblock %}
 </body>

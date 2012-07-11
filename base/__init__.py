@@ -7,6 +7,9 @@ from flask.ext.security import (User, Security, LoginForm,  login_required,
 from flask.ext.security.datastore.sqlalchemy import SQLAlchemyUserDatastore
 
 from flaskext.themes import setup_themes, load_themes_from, packaged_themes_loader, theme_paths_loader
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.sql.expression import case
+from base.custom_sql_fields import JSONEncodedDict
 from base.extensions import init_extensions
 
 
@@ -18,10 +21,25 @@ db = SQLAlchemy(app)
 class UserAccountMixin():
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
-    custom_questions_json = db.Column(db.Text)
+    custom_questions_json = db.Column(JSONEncodedDict(255))
     ran_through_first_run_wizard = db.Column(db.Boolean)
+    profile_image = db.Column(db.String(255))
 
-Security(app, SQLAlchemyUserDatastore(db, UserAccountMixin))
+    @hybrid_property
+    def full_name(self):
+        if self.first_name is not None:
+            return self.first_name + " " + self.last_name
+        else:
+            return self.last_name
+
+    @full_name.expression
+    def full_name(cls):
+        return case([
+            (cls.first_name != None, cls.first_name + " " + cls.last_name),
+        ], else_ = cls.last_name)
+
+
+security = Security(app, SQLAlchemyUserDatastore(db, UserAccountMixin))
 
 init_extensions(app)
 
