@@ -109,6 +109,10 @@ def bounceback_get():
         if auth.user is not None:
             g.user = auth.user
             login_user(auth.user, force=True)
+            flash('You were successfully logged in')
+
+            return redirect(url_for('front_page'))
+
 
         session['fb_auth'] = auth.id
 

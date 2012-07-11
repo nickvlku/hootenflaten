@@ -106,12 +106,14 @@
                         <p style="padding-top: 10px">The Stuy Bay group is dedicated to bringing Stuyvesant High School alumni in Northern California together and fostering community and spirit.
                             If you're a graduate of Stuyvesant High School in NYC and are currently living in (or planning on moving to) the San Francisco Bay Area,
                             please sign up and reconnect! </p>
+                        {% if not current_user.is_authenticated() %}
                         <p>
                             <a class="btn btn-primary btn-large">Sign up directly &raquo;</a>
                             {% if facebook_enabled %}
                             <a class="btn btn-primary btn-large" href="{{ facebook_url }}">Sign up via Facebook&raquo;</a>
                             {% endif %}
                         </p>
+                        {% endif %}
                     </div>
                     <div class="span5">
                         <ul class="thumbnails">
