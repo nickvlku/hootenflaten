@@ -6,15 +6,25 @@ import requests
 from base import db
 from site_configuration.themes import render
 
-from flask import request, g, session, abort, current_app
+from flask import request, g, session, abort, current_app, url_for, redirect
 from flask.ext.login import login_user, current_user
 from flask_login import login_required
 
-from facebook_auth import facebook_auth
+from facebook_auth import fb_auth
 from facebook_auth.models import FacebookUser
 from facebook_auth.forms import FacebookRegistrationForm
 
-@facebook_auth.route('/complete', methods=['GET'])
+@fb_auth.route('/register')
+def register_facebook_account():
+    auth_id = session['fb_auth']
+    auth = FacebookUser.query.filter_by(id=auth_id).first()
+    registration_form = FacebookRegistrationForm( first_name = auth.first_name,
+        last_name = auth.last_name,
+        email = auth.email )
+
+    return render('facebook_auth/confirm_fb.html', facebook_user=auth, form=registration_form)
+
+@fb_auth.route('/complete', methods=['GET'])
 def bounceback_get():
     args = dict(client_id=current_app.config.get('FACEBOOK').get('ID'), redirect_uri=request.base_url)
     try:
@@ -61,11 +71,8 @@ def bounceback_get():
             login_user(auth.user, force=True)
 
         session['fb_auth'] = auth.id
-        registration_form = FacebookRegistrationForm( first_name = auth.first_name,
-                                        last_name = auth.last_name,
-                                        email = auth.email )
 
-        return render('facebook_auth/confirm_fb.html', facebook_user=auth, form=registration_form)
+        return redirect(url_for('.register_facebook_account'))
 
     except Exception, e:
         current_app.logger.exception("Error getting facebook access token: %s" % e)
@@ -73,11 +80,8 @@ def bounceback_get():
 
     return render('facebook_auth/confirm_fb.html')
 
-@facebook_auth.route('/complete', methods=['POST'])
-def complete():
-    pass
 
 @login_required
-@facebook_auth.route('/test', methods=['GET'])
+@fb_auth.route('/test', methods=['GET'])
 def test():
     return "Hello you are logged in! -- %s" % current_user.username

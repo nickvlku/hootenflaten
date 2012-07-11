@@ -3,7 +3,7 @@ __author__ = 'nick'
 __meta__ = {
     'Author': 'Nick Vlku <nick@vlku.com',
     'Title': 'Facebook Authentication for Hootenflaten',
-    'BlueprintName': 'facebook_auth',
+    'BlueprintName': 'fb_auth',
     'Version': 0.1,
     'Description': 'Allow users to login into the site via Facebook',
     'ContextProcessors':  [
@@ -15,8 +15,10 @@ __meta__ = {
 
 from flask.blueprints import Blueprint
 
-facebook_auth = Blueprint('facebook-auth', __name__, template_folder='templates')
+
+fb_auth = Blueprint('fb_auth', __name__, template_folder='templates')
 
 from facebook_auth import views
 from facebook_auth import models
+
 

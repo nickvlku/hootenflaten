@@ -8,7 +8,6 @@ from wtforms.form import Form
 def custom_questions_form():
 
     def custom_fields(cls):
-        count = cls.custom_fields_count
         fields = []
         for key in cls._fields.keys():
             if key.startswith("custom__"):
@@ -19,7 +18,7 @@ def custom_questions_form():
     fields_module = importlib.import_module("wtforms.fields")
 
     questions = CustomQuestion.query.order_by("position")
-    attributes = {}
+    attributes = dict()
     attributes['custom_fields'] = []
     number_of_fields = 0
     for question in questions:
