@@ -14,7 +14,7 @@ from facebook_auth import fb_auth
 from facebook_auth.models import FacebookUser
 from facebook_auth.forms import FacebookRegistrationForm
 
-@fb_auth.route('/register')
+@fb_auth.route('/register', methods=['GET'])
 def register_facebook_account():
     auth_id = session['fb_auth']
     auth = FacebookUser.query.filter_by(id=auth_id).first()
@@ -23,6 +23,16 @@ def register_facebook_account():
         email = auth.email )
 
     return render('facebook_auth/confirm_fb.html', facebook_user=auth, form=registration_form)
+
+@fb_auth.route('/register', methods=['POST'])
+def register_facebook_account_post():
+    auth_id = session['fb_auth']
+    registration_form = FacebookRegistrationForm(request.form)
+    try:
+        registration_form.validate()
+    except:
+        return "BAD!"
+    return "YOU DID IT!"
 
 @fb_auth.route('/complete', methods=['GET'])
 def bounceback_get():

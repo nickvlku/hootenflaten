@@ -43,6 +43,8 @@
                                 {{ input("First Name", "first_name", form.first_name() ) }}
                                 {{ input("Last Name", "last_name",  form.last_name.data) }}
                                 {{ input("Email Address", "email_address", form.email.data) }}
+                                {{ input("Password", "password", form.password.data) }}
+                                {{ input("Confirm Password", "confirm_password", form.confirm_password.data) }}
 
                             </fieldset>
 
@@ -131,8 +133,6 @@
             }
 
          }).wizard('form').submit(function( event ) {
-                    event.preventDefault();
-                    alert('Form submitted!');
 
          });
 

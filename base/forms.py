@@ -1,9 +1,33 @@
 import importlib
+from wtforms.form import Form
+from wtforms.validators import Required
+
 from base.models import CustomQuestion
 
 __author__ = 'nick'
 
-from wtforms.form import Form
+
+class PasswordMatch(Required):
+
+    # a validator which makes a password field not validate if
+    # another field is set and has not the same value
+
+    def __init__(
+            self,
+            other_field_name,
+            *args,
+            **kwargs
+    ):
+
+        self.other_field_name = other_field_name
+        super(PasswordMatch, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field.data != field.data:
+            raise Exception('Passwords do not match')
+        if other_field.data:
+            super(PasswordMatch, self).__call__(form, field)
 
 def custom_questions_form():
 
