@@ -40,9 +40,9 @@
                                 <div style="text-align: right">Step 1 of 2</div>
 
                                 <legend>Your Info from Facebook </legend>
-                                {{ input("First Name", "first_name", facebook_user.first_name ) }}
-                                {{ input("Last Name", "last_name", facebook_user.last_name) }}
-                                {{ input("Email Address", "email_address", facebook_user.email) }}
+                                {{ input("First Name", "first_name", form.first_name() ) }}
+                                {{ input("Last Name", "last_name",  form.last_name.data) }}
+                                {{ input("Email Address", "email_address", form.email.data) }}
 
                             </fieldset>
 
@@ -55,9 +55,9 @@
                             <div style="text-align: right">Step 2 of 2</div>
 
                             <legend>Custom Questions</legend>
-                            {{ input("Stuyvesant Class Year", "custom_class_year" ) }}
-                            {{ input("Current Location", "location") }}
-                            {{ input("What you're up to?", "location") }}
+                            {% for custom_field in form.custom_fields() %}
+                            {{ input(custom_field.label, custom_field.data ) }}
+                            {% endfor %}
                             </fieldset>
                         </div>
 

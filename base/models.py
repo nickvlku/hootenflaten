@@ -80,4 +80,8 @@ class CustomQuestion(db.Model):
                         )))
 
 
+    def __repr__(self):
+        return "<Custom Question: %r: %r>" % (self.name, self.question)
+
+
 db.create_all()
