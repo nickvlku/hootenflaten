@@ -14,13 +14,13 @@ from flask_login import login_required
 
 from facebook_auth import fb_auth
 from facebook_auth.models import FacebookUser
-from facebook_auth.forms import FacebookRegistrationForm
+from hootenflaten_auth.forms import RegistrationForm
 
 @fb_auth.route('/register', methods=['GET'])
 def register_facebook_account():
     auth_id = session['fb_auth']
     auth = FacebookUser.query.filter_by(id=auth_id).first()
-    registration_form = FacebookRegistrationForm( first_name = auth.first_name,
+    registration_form = RegistrationForm( first_name = auth.first_name,
         last_name = auth.last_name,
         email = auth.email )
 
@@ -28,7 +28,7 @@ def register_facebook_account():
 
 @fb_auth.route('/register', methods=['POST'])
 def register_facebook_account_post():
-    registration_form = FacebookRegistrationForm(request.form)
+    registration_form = RegistrationForm(request.form)
     registration_form.validate()
     pw = registration_form.password.data
 

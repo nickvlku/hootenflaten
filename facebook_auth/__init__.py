@@ -1,7 +1,7 @@
 __author__ = 'nick'
 
 __meta__ = {
-    'Author': 'Nick Vlku <nick@vlku.com',
+    'Author': 'Nick Vlku <nick@vlku.com>',
     'Title': 'Facebook Authentication for Hootenflaten',
     'BlueprintName': 'fb_auth',
     'Version': 0.1,
@@ -10,7 +10,8 @@ __meta__ = {
         'facebook_auth.context_processors.inject_facebook_login'
     ],
     'DefaultUrlPrefix': '/facebook',
-    'NeedsConfiguration' : True
+    'NeedsConfiguration' : True,
+    'DependsOn': [ 'hootenflaten_auth', ]
 }
 
 from flask.blueprints import Blueprint

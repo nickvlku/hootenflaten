@@ -37,37 +37,48 @@
                         <form method="POST" id="wrapped" class="form-horizontal">
                         <div class="step">
                             <fieldset>
+                                {% if form.custom_fields() %}
                                 <div style="text-align: right">Step 1 of 2</div>
+                                {% endif %}
 
                                 <legend>Your Info from Facebook </legend>
-                                {{ input("First Name", "first_name", form.first_name() ) }}
-                                {{ input("Last Name", "last_name",  form.last_name.data) }}
-                                {{ input("Email Address", "email", form.email.data) }}
-                                {{ input("Password", "password", form.password.data) }}
-                                {{ input("Confirm Password", "confirm_password", form.confirm_password.data) }}
-
+                                {{ input(form.first_name) }}
+                                {{ input(form.last_name) }}
+                                {{ input(form.email) }}
+                                {{ input(form.password) }}
+                                {{ input(form.confirm_password) }}
                             </fieldset>
 
 
                         </div>
+
+                        {% if form.custom_fields() %}
 
                         <div class="step">
 
                             <fieldset>
-                            <div style="text-align: right">Step 2 of 2</div>
+                                <div style="text-align: right">Step 2 of 2</div>
 
-                            <legend>Custom Questions</legend>
-                            {% for custom_field in form.custom_fields() %}
-                            {{ input(custom_field.label, custom_field.id, custom_field.data ) }}
-                            {% endfor %}
+                                <legend>Custom Questions</legend>
+                                {% for custom_field in form.custom_fields() %}
+                                {{ input(custom_field) }}
+                                {% endfor %}
                             </fieldset>
                         </div>
 
+                        {% endif %}
+
+                        {% if form.custom_fields() %}
                         <div class="navigation" style="text-align: right">
                             <button type="submit" name="backward" class="backward btn btn-danger"><i class="icon-chevron-left icon-white"></i> Back</button>
                             <button type="button" name="forward" id="forward" class="forward btn btn-success">Next <i class="icon-chevron-right icon-white"></i></button>
                             <button type="submit" id="SaveAccount" name="process" class="btn btn-success submit">Done</button>
                         </div>
+                        {% else %}
+                        <div class="navigation" style="text-align: right">
+                            <button type="submit" id="SaveAccount" name="process" class="btn btn-success submit">Done</button>
+                        </div>
+                        {% endif %}
                         </form>
 
                     </div>
@@ -90,9 +101,9 @@
 <script src="{{ theme_static('bootstrap/js/bootstrap-button.js') }}"></script>
 <script src="{{ theme_static('bootstrap/js/bootstrap-dropdown.js') }}"></script>
 
+{% if form.custom_fields() %}
 <script type="text/javascript">
     $(function(){
-        $("#progressbar").progressbar();
         $("#SaveAccount").hide();
 
         $("#example-1").wizard({
@@ -138,4 +149,5 @@
 
     });
 </script>
+{% endif %}
 {% endblock %}

@@ -1,17 +1,22 @@
-{% macro input(pretty_name='', field_name, field_value, errors={}, add_on=None) -%}
-<div class="control-group{% if field_name in errors -%} error{%- endif %}">
-    <label class="control-label" for="{{ field_name }}">{{ pretty_name }}</label>
+{% macro input(field, classes="input-large", add_on=None, errors={}) -%}
+
+<div class="control-group{% if field.id in errors.keys() %} error{% endif %}">
+    {{ field.label(class="control-label") }}
     <div class="controls">
         {% if add_on -%}
             <div class="input-prepend">
-                <span class="add-on"><i class="{{ add_on }}"></i></span><input type="text" class="input-large" id="email_address" name="email_address" value="{{ field_value }}">
+                <span class="add-on"><i class="{{ add_on }}"></i></span>{{field(class_=classes,**kwargs)}}
             </div>
         {% else %}
-            <input type="text" class="input-xlarge" id="{{ field_name }}" name="{{ field_name }}" value="{{ field_value }}">
+            {{field(class_=classes,**kwargs)}}
         {%- endif %}
-        {% if field_name in errors -%}
-            <span class="help-inline">{{ errors[field_name] }}</span>
+        <span class="formError help-inline">
+        {% if field.id in errors.keys() -%}
+            {% for error in errors[field.id] %}
+            {{error}}
+            {% endfor %}
         {%- endif %}
+        </span>
     </div>
 </div>
 {%- endmacro %}

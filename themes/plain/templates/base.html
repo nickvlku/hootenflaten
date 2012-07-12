@@ -45,7 +45,9 @@
             {% if current_user.is_authenticated() %}
             <div class="btn-group pull-right">
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                    <img src="{{current_user.profile_image}}" height="18" width="18"/> {{current_user.full_name}}
+                    {% if current_user.profile_image -%}
+                    <img src="{{current_user.profile_image}}" height="18" width="18"/>
+                    {%- endif %}{{current_user.full_name}}
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
