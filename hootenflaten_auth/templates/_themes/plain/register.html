@@ -6,16 +6,17 @@
 
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="span2">
+        <div class="span3">
         </div>
-        <div class="span8">
+        <div class="span6">
             <h1>Hello!</h1>
             <h3>If you already have an account, you can <a href="{{url_for('.login')}}">login</a>.</h3>
             <br/>
             <div class="row-fluid">
-                <div class="span2"></div>
-                <div class="span8 well" id="example-1" >
+                <div class="span8 well">
                         <form method="POST" id="registration_form" class="form-horizontal">
+                            {{ form.csrf_token }}
+
                             <div class="step">
                                 <fieldset>
                                     {% if form.custom_fields() %}
@@ -23,11 +24,10 @@
                                     {% endif %}
                                     <legend>Basic Information </legend>
                                     {{ input(form.first_name, errors=form.errors) }}
-                                    {{ input(form.last_name, 'input-large required', errors=form.errors) }}
-                                    {{ input(form.email, 'input-large email required',remote=url_for('.username_valid'), errors=form.errors) }}
+                                    {{ input(form.last_name, errors=form.errors) }}
+                                    {{ input(form.email, 'input-large email',remote=url_for('.username_valid'), errors=form.errors) }}
                                     {{ input(form.password, errors=form.errors) }}
                                     {{ input(form.confirm_password, errors=form.errors) }}
-                                    {{ form.csrf_token }}
 
                                 </fieldset>
 
@@ -42,7 +42,7 @@
 
                                     <legend>Custom Questions</legend>
                                     {% for custom_field in form.custom_fields() %}
-                                    {{ input(custom_field) }}
+                                    {{ input(custom_field, errors=form.errors) }}
                                     {% endfor %}
                                 </fieldset>
                             </div>
@@ -52,7 +52,7 @@
                             <div class="navigation" style="text-align: right">
                                 <button type="submit" name="backward" class="backward btn btn-danger"><i class="icon-chevron-left icon-white"></i> Back</button>
                                 <button type="button" name="forward" id="forward" class="forward btn btn-success">Next <i class="icon-chevron-right icon-white"></i></button>
-                                <button type="submit" id="SaveAccount" name="process" class="btn btn-success submit">Done</button>
+                                <button type="submit" id="SaveAccount" name="process" class="btn btn-primary submit">Done</button>
                             </div>
                             {% else %}
                             <div class="navigation" style="text-align: right">
@@ -61,7 +61,12 @@
                             {% endif %}
                         </form>
                 </div>
-                <div class="span2"></div>
+                {% if facebook_enabled %}
+                <div class="span4 well">
+                    <legend>Register with</legend>
+                    <a href="{{facebook_url}}"><img src="http://likeitpages.com/images/fb-connect-large.png"/></a>
+                </div>
+                {% endif %}
 
             </div>
         </div>
@@ -81,50 +86,12 @@
 <script src="{{ theme_static('bootstrap/js/bootstrap-button.js') }}"></script>
 <script src="{{ theme_static('bootstrap/js/bootstrap-dropdown.js') }}"></script>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("#registration_form").validate({
-            onkeyup: false,
-            onkeydown: false,
-            errorClass: "error",
-            rules: {
-                email: {
-                    required: true,
-                    email: true,
-                    remote: "{{url_for('.username_valid')}}"
-                }
-            },
-            messages: {
-                email: {
-                    remote: jQuery.validator.format("{0} is already registered.<br/> Try <a href='/login'>logging in</a>?"),
-                    required: "This is a required field",
-                    email: "Please enter a valid email address"
-                }
-            },
-            highlight: function(element, errorClass) {
-                $(element.form).find("label[for=" + element.id + "]").parent().addClass(errorClass);
-            },
-            unhighlight: function(element, errorClass) {
-                $(element.form).find("label[for=" + element.id + "]").parent().removeClass(errorClass);
-                element.parent().find(".formError")[0].innerHTML = "";
-            },
-            errorElement: "span",
-            errorPlacement: function(error, element) {
-                error.appendTo(element.parent().find(".formError")[0])
-            }
-
-        })
-    });
-
-</script>
-
 {% if form.custom_fields() %}
 <script type="text/javascript">
     $(function(){
         $("#SaveAccount").hide();
 
-        $("#example-1").wizard({
-            stepsWrapper: "#wrapped",
+        $("#registration_form").wizard({
             submit: ".submit",
             animations: {
                 show: {
@@ -158,13 +125,82 @@
                     $("#forward").show();
 
                 }
+            },
+            beforeSelect: function( event, state ) {
+                var inputs = $(this).wizard('state').step.find(':input');
+                return !inputs.length || !!inputs.valid();
             }
 
-        }).wizard('form').submit(function( event ) {
+        }).validate({
+                    onkeyup: false,
+                    onkeydown: false,
+                    errorClass: "error",
+                    rules: {
+                        email: {
+                            required: true,
+                            email: true,
+                            remote: "{{url_for('.username_valid')}}"
+                        }
+                    },
+                    messages: {
+                        email: {
+                            remote: jQuery.validator.format("{0} is already registered.<br/> Try <a href='/login'>logging in</a>?"),
+                            email: "Please enter a valid email address"
+                        }
+                    },
+                    highlight: function(element, errorClass) {
+                        $(element.form).find("label[for=" + element.id + "]").parent().addClass(errorClass);
+                    },
+                    unhighlight: function(element, errorClass) {
+                        $(element.form).find("label[for=" + element.id + "]").parent().removeClass(errorClass);
+                        $(element).parent().find(".formError")[0].innerHTML = "";
+                    },
+                    errorElement: "span",
+                    errorPlacement: function(error, element) {
+                        error.appendTo(element.parent().find(".formError")[0])
+                    }
 
-                });
+        })
 
     });
 </script>
+{% else %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#registration_form").validate({
+            onkeyup: false,
+            onkeydown: false,
+            errorClass: "error",
+            rules: {
+                email: {
+                    required: true,
+                    email: true,
+                    remote: "{{url_for('.username_valid')}}"
+                }
+            },
+            messages: {
+                email: {
+                    remote: jQuery.validator.format("{0} is already registered.<br/> Try <a href='/login'>logging in</a>?"),
+                    required: "This is a required field",
+                    email: "Please enter a valid email address"
+                }
+            },
+            highlight: function(element, errorClass) {
+                $(element.form).find("label[for=" + element.id + "]").parent().addClass(errorClass);
+            },
+            unhighlight: function(element, errorClass) {
+                $(element.form).find("label[for=" + element.id + "]").parent().removeClass(errorClass);
+                $(element).parent().find(".formError")[0].innerHTML = "";
+            },
+            errorElement: "span",
+            errorPlacement: function(error, element) {
+                error.appendTo(element.parent().find(".formError")[0])
+            }
+
+        })
+    });
+
+</script>
+
 {% endif %}
 {% endblock %}

@@ -2,6 +2,9 @@
 
 <div class="control-group{% if field.id in errors.keys() %} error{% endif %}">
     {{ field.label(class="control-label") }}
+    {% if field.flags.required %}
+      {% set classes = classes + " required" %}
+    {% endif %}
     <div class="controls">
         {% if add_on -%}
             <div class="input-prepend">

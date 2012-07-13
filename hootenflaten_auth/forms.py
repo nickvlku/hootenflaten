@@ -12,5 +12,5 @@ class RegistrationForm(custom_questions_form()):
     last_name = TextField("Last Name", validators=[Required()])
     email = EmailField("Email Address", validators=[Required(), Email()])
     password = PasswordField("Password", validators=[Required()])
-    confirm_password = PasswordField("Confirm Password", validators=[PasswordMatch('password', message='Passwords need to match')])
+    confirm_password = PasswordField("Confirm Password", validators=[Required(), PasswordMatch('password', message='Passwords need to match')])
 
