@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
 
     {%block head %}
@@ -148,20 +148,47 @@
                 <p>This is a special announcement panel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut ipsum leo. Suspendisse quis libero eleifend tortor tempor convallis sit amet sit amet tellus. Phasellus vitae purus in orci pellentesque dignissim. Cras quis elit in sem vulputate pharetra vitae sit amet tortor. Fusce laoreet nulla in leo porta eu semper mauris placerat. Pellentesque fermentum venenatis quam, vel blandit purus consequat vel. Suspendisse posuere vestibulum diam, a pellentesque arcu molestie nec. Quisque nec neque et nunc porttitor lacinia. Maecenas iaculis risus ac lorem interdum at aliquam nibh molestie. Aenean sit amet nibh dignissim lorem dignissim semper. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse elementum mattis odio, et gravida nulla auctor tempus.</p>
             </div>
 
-
-            <div class="status_post" id="hootenflaten_status_post" >
-                <form>
-                <div class="con">
-                    <div class="pd">
-                        <div class="status">Post a Status Update</div>
-                        <div class="loading"></div>
+            <div class="status_module" id="hootenflaten_status">
+                <div class="status_post" id="hootenflaten_status_post" >
+                    <form>
+                    <div class="con">
+                        <div class="pd">
+                            <div class="status">Post a Status Update</div>
+                            <div class="loading"></div>
+                        </div>
+                        <div class="img_top"></div>
+                        <div class="text_status">
+                            <textarea class="input_box" placeholder="What's up?"></textarea></div>
+                            <button class="btn btn-primary" style="float:right; margin-top:5px;">Post</button>
                     </div>
-                    <div class="img_top"></div>
-                    <div class="text_status">
-                        <textarea class="input_box" placeholder="What's up?"></textarea></div>
-                        <button class="btn btn-primary" style="float:right; margin-top:5px;">Post</button>
+                    </form>
                 </div>
-                </form>
+
+                <div class="load_status">
+                    <div class="status_img"><img src="{{current_user.profile_image}}" /></div>
+                    <div class="status_text"><a href="#" class="blue">Nick Vlku</a>
+                        <p class="text">Welcome to Hootenflaten!</p>
+                        <div class="well">
+                            <b><a href="http://hootenflaten.org">Hootenflaten Web Site</a></b><br/>
+                            Hootenflaten is social in a box.
+                        </div>
+                        <div class="date">12:15 PM EDT June 14, 2013 &middot; <a href="#" class="light_blue">
+                            Awesome!</a> &middot; <a href="#" class="light_blue">Comment</a></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="load_status">
+                    <div class="status_img"><img src="https://graph.facebook.com/1402096/picture" /></div>
+                    <div class="status_text"><a href="#" class="blue">Enia Titova</a>
+                        <p class="text">Test Post!</p>
+                        <img class="thumbnail" src="http://sphotos-a.xx.fbcdn.net/hphotos-ash4/396930_3732633712509_1541024994_n.jpg" width="200"/>
+                        <div class="date">1:21 PM EDT June 15, 2013 &middot; <a href="#" class="light_blue">
+                            Awesome!</a> &middot; <a href="#" class="light_blue">Comment</a></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
             </div>
             {% endblock %}
         </div>
