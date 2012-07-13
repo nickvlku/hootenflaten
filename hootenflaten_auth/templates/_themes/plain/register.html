@@ -10,10 +10,10 @@
         </div>
         <div class="span8">
             <h1>Hello!</h1>
-            <h3>Before we continue, does this all look good?</h3>
+            <h3>If you already have an account, you can <a href="{{url_for('.login')}}">login</a>.</h3>
             <br/>
             <div class="row-fluid">
-
+                <div class="span2"></div>
                 <div class="span8 well" id="example-1" >
                         <form method="POST" id="registration_form" class="form-horizontal">
                             <div class="step">
@@ -56,33 +56,18 @@
                             </div>
                             {% else %}
                             <div class="navigation" style="text-align: right">
-                                <button type="submit" id="SaveAccount" name="process" class="btn btn-success submit">Done</button>
+                                <button type="submit" id="SaveAccount" name="process" class="btn btn-primary submit">Done</button>
                             </div>
                             {% endif %}
                         </form>
                 </div>
-                {% block profile_picture %}
-                <div class="span3">
-                    <ul class="thumbnails">
-                        <li class="span12">
-                            <div class="thumbnail">
-                                <img src=""/>
-                                <div class="caption">
-                                    <h5>Your Facebook Profile Picture</h5>
-                                    <p>This is your current Facebook profile picture.  You can use another one if you want!</p>
-                                    <p style="text-align: center"><a href="#" class="btn">Change</a></p>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                {% endblock %}
+                <div class="span2"></div>
 
             </div>
         </div>
         <div class="span2"></div>
     </div><!--/containers-->
-
+</div>
 {% endblock %}
 
 {% block bottom_javascript %}

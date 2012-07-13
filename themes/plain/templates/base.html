@@ -47,11 +47,12 @@
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                     {% if current_user.profile_image -%}
                     <img src="{{current_user.profile_image}}" height="18" width="18"/>
-                    {%- endif %}{{current_user.full_name}}
+                    {%- endif %} {{current_user.full_name}} <span class="badge badge-info">3</span>
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Profile</a></li>
+                    <li><a href="#"><i class="icon-envelope"></i> Messages <span class="badge badge-info">3</span></a></li>
+                    <li><a href="#"><i class="icon-user"></i> Profile</a></li>
                     <li class="divider"></li>
                     <li><a href="{{url_for('auth.logout')}}">Sign Out</a></li>
                 </ul>
@@ -76,19 +77,21 @@
 {% endblock %}
 <div class="container-fluid">
     {% block flash_content %}
-    {% with flash = get_flashed_messages() %}
+    {% with flash = get_flashed_messages(with_categories=true) %}
 
     {% if flash %}
     <div class="row-fluid">
         <div class="span3">
 
         </div>
+        {% for category, message in flash %}
         <div class="span6">
-            <div class="alert alert-success" id="flash">
+            <div class="alert {% if category == "error" %} alert-error {% else %} alert-success {% endif %}" id="flash">
                 <button class="close" data-dismiss="alert">×</button>
-                You've successfully logged in.
+                {{message}}
             </div>
         </div>
+        {% endfor %}
         <div class="span3">
         </div>
     </div>
@@ -110,7 +113,7 @@
                             please sign up and reconnect! </p>
                         {% if not current_user.is_authenticated() %}
                         <p>
-                            <a class="btn btn-primary btn-large">Sign up directly &raquo;</a>
+                            <a class="btn btn-primary btn-large" href="{{url_for('hootenflaten_auth.register')}}">Sign up directly &raquo;</a>
                             {% if facebook_enabled %}
                             <a class="btn btn-primary btn-large" href="{{ facebook_url }}">Sign up via Facebook&raquo;</a>
                             {% endif %}
