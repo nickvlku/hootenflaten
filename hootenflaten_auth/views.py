@@ -1,4 +1,5 @@
 import datetime
+from flask_login import current_user
 from flask_security import LoginForm
 
 from base import db
@@ -14,10 +15,16 @@ from hootenflaten_auth.forms import RegistrationForm
 
 @hootenflaten_auth.route("/register", methods=['GET'])
 def register():
+    if current_user.is_authenticated():
+        return redirect(url_for('front_page'))
     return render('register.html', form=RegistrationForm())
 
 @hootenflaten_auth.route("/register", methods=['POST'])
 def register_post():
+
+    if current_user.is_authenticated():
+        return redirect(url_for('front_page'))
+
     form = RegistrationForm(request.form)
     if form.validate():
         u = user_datastore.create_user(
@@ -62,5 +69,10 @@ def username_valid():
 
 @hootenflaten_auth.route("/login")
 def login():
+
+    if current_user.is_authenticated():
+        return redirect(url_for('front_page'))
+
+
     l = LoginForm()
     return render('login.html', form=LoginForm())

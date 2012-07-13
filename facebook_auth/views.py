@@ -18,6 +18,9 @@ from hootenflaten_auth.forms import RegistrationForm
 
 @fb_auth.route('/register', methods=['GET'])
 def register_facebook_account():
+    if current_user.is_authenticated():
+        return redirect(url_for('front_page'))
+
     auth_id = session['fb_auth']
     auth = FacebookUser.query.filter_by(id=auth_id).first()
     registration_form = RegistrationForm( first_name = auth.first_name,
@@ -28,6 +31,9 @@ def register_facebook_account():
 
 @fb_auth.route('/register', methods=['POST'])
 def register_facebook_account_post():
+    if current_user.is_authenticated():
+        return redirect(url_for('front_page'))
+
     registration_form = RegistrationForm(request.form)
     registration_form.validate()
     pw = registration_form.password.data
