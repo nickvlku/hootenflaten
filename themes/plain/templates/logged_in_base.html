@@ -28,6 +28,9 @@
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="{{ theme_static('bootstrap/js/date.js') }}"/></script>
+    <script src="{{ theme_static('bootstrap/js/plain.js') }}"/></script>
     {% endblock %}
 
     {% endblock %}
@@ -150,7 +153,6 @@
 
             <div class="status_module" id="hootenflaten_status">
                 <div class="status_post" id="hootenflaten_status_post" >
-                    <form>
                     <div class="con">
                         <div class="pd">
                             <div class="status">Post a Status Update</div>
@@ -158,12 +160,28 @@
                         </div>
                         <div class="img_top"></div>
                         <div class="text_status">
-                            <textarea class="input_box" placeholder="What's up?"></textarea></div>
-                            <button class="btn btn-primary" style="float:right; margin-top:5px;">Post</button>
+                            <textarea class="input_box" name="status_update_box" placeholder="What's up?"></textarea></div>
+                            <button class="btn btn-primary" style="float:right; margin-top:5px;" id="post_status">Post</button>
                     </div>
-                    </form>
                 </div>
 
+                {% for status in statuses %}
+                    <div class="load_status" status_id="{{status.id}}">
+                        <div class="status_img"><img src="{{status.user.profile_image}}" /></div>
+                        <div class="status_text"><a href="#" class="blue">{{status.user.full_name}}</a>
+                            <p class="text">{{status.status_update}}</p>
+                            <div class="date" date_id="{{status.id}}">{{status.created_at}} UTC</div><div class="date"> &middot; <a href="#" class="light_blue">
+                                Awesome!</a> &middot; <a href="#" class="light_blue">Comment</a></div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <script type="text/javascript">
+                        $(function() {
+                            var status_date = $("div[date_id='{{status.id}}']")[0].innerHTML;
+                            $("div[date_id='{{status.id}}']")[0].innerHTML = new Date(status_date).toString('h:mm:ss tt dddd, MMMM dd, yyyy');
+                        });
+                    </script>
+                {% endfor %}
                 <div class="load_status">
                     <div class="status_img"><img src="{{current_user.profile_image}}" /></div>
                     <div class="status_text"><a href="#" class="blue">Nick Vlku</a>
@@ -188,6 +206,8 @@
                     </div>
                     <div class="clear"></div>
                 </div>
+
+
 
             </div>
             {% endblock %}
@@ -238,11 +258,23 @@
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
 <script src="{{ theme_static('bootstrap/js/bootstrap.min.js') }}"/></script>
-<script src="{{ theme_static('bootstrap/js/bootstrap-button.js') }}"/></script>
-<script src="{{ theme_static('bootstrap/js/bootstrap-dropdown.js') }}"/></script>
-<script src="{{ theme_static('bootstrap/js/bootstrap-alert.js') }}"/></script>
+
+<script type="text/javascript">
+        $(function() {
+            $("#post_status").click(function() {
+                alert($('input[name="status_update_box"]').val())
+                $.getJSON('{{url_for('hootenflaten_status.status_post')}}',
+                {
+                    status: $('textarea[name="status_update_box"]').val()
+                }, function(data) {
+                    alert(data);
+                });
+                return false;
+            });
+        });
+</script>
 
 {% endblock %}
 {% endblock %}

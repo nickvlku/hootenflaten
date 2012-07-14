@@ -90,7 +90,6 @@
     display:none;
     width:16px;
     height:11px;
-    background-image:url('loading.gif');
     background-repeat:no-repeat;
     float:right;
 }

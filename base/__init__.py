@@ -60,6 +60,6 @@ try:
 except RuntimeError:
 	app.logger.warning("You have not specified a HOOTENFLATEN_SETTINGS environment variable.  You have no overrides from the default")
 
-
+import base.view_helpers
 import base.views
 import base.models
