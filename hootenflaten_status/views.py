@@ -6,6 +6,7 @@ from flask_login import login_required, current_user
 
 from hootenflaten_status import hootenflaten_status
 from hootenflaten_status.models import StatusUpdate
+from site_configuration.themes import render
 
 @hootenflaten_status.route("/_post", methods=['GET'])
 @login_required
@@ -17,4 +18,4 @@ def status_post():
     db.session.add(s)
     db.session.commit()
 
-    return s.to_json()
+    return render("status.html", status=s)

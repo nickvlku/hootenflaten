@@ -2,6 +2,7 @@ import json
 from sqlalchemy import Column, Integer, ForeignKey, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from sqlalchemy.types import String
 
 from base import db
 from base.custom_sql_fields import ChoiceType, JSONEncodedDict
@@ -11,13 +12,12 @@ Base = declarative_base()
 
 status_user_awesome_table = db.Table('status_user_awesomes',
     db.Column('user_id', Integer, ForeignKey('user.id')),
-    db.Column('status_id', Integer, ForeignKey('status.id')))
+    db.Column('status_id', String(45), ForeignKey('status.id')))
 
 
 class StatusUpdate(HootenflattenBaseObject, IsCommentableMixin, db.Model):
     __tablename__ = "status"
 
-    id = Column(Integer, primary_key=True)
     status_update = Column(Text)
     references_type = Column(ChoiceType((
         ("photo", "photo"),

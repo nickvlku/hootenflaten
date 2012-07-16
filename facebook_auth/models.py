@@ -10,7 +10,6 @@ from base.models import HootenflattenBaseObject
 class FacebookUser(HootenflattenBaseObject, db.Model):
     __tablename__ = "facebook_user"
 
-    id = Column(Integer, primary_key=True)
     access_token = Column(String(200))
     first_name = Column(String(200))
     last_name = Column(String(200))
@@ -37,5 +36,14 @@ class FacebookUser(HootenflattenBaseObject, db.Model):
             (cls.first_name != None, cls.first_name + " " + cls.last_name),
         ], else_ = cls.last_name)
 
+
+    def __init__(self, access_token, first_name, last_name, facebook_id, user_name, email):
+        super(FacebookUser,self).__init__()
+        self.access_token = access_token
+        self.first_name = first_name
+        self.last_name = last_name
+        self.facebook_id = facebook_id
+        self.user_name = user_name
+        self.email = email
 
 db.create_all()

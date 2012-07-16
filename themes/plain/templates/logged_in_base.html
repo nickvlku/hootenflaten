@@ -126,17 +126,12 @@
             {% with flash = get_flashed_messages(with_categories=true) %}
 
             {% if flash %}
-            <div class="row-fluid">
-                <div class="span3"></div>
                 {% for category, message in flash %}
-                <div class="span6">
-                    <div class="alert {% if category == "error" %} alert-error {% else %} alert-success {% endif %}" id="flash">
-                    <button class="close" data-dismiss="alert">×</button>
+                <div class="alert {% if category == "error" %} alert-error {% else %} alert-success {% endif %}" id="flash">
+                <button class="close" data-dismiss="alert">×</button>
                     {{message}}
                 </div>
                 {% endfor %}
-                <div class="span3"></div>
-            </div>
             {% endif %}
             {% endwith%}
             {% endblock %}
@@ -163,6 +158,9 @@
                             <textarea class="input_box" name="status_update_box" placeholder="What's up?"></textarea></div>
                             <button class="btn btn-primary" style="float:right; margin-top:5px;" id="post_status">Post</button>
                     </div>
+                </div>
+
+                <div id="new_statuses">
                 </div>
 
                 {% for status in statuses %}
@@ -264,12 +262,15 @@
 <script type="text/javascript">
         $(function() {
             $("#post_status").click(function() {
-                alert($('input[name="status_update_box"]').val())
-                $.getJSON('{{url_for('hootenflaten_status.status_post')}}',
+                $.get('{{url_for('hootenflaten_status.status_post')}}',
                 {
                     status: $('textarea[name="status_update_box"]').val()
                 }, function(data) {
-                    alert(data);
+
+                    $("#new_statuses").prepend(data);
+                    $("#new_statuses > [added='true']").each(function(element) {
+                        $(this).fadeIn("slow");
+                    });
                 });
                 return false;
             });

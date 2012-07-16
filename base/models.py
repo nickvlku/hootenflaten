@@ -15,7 +15,7 @@ class HootenflattenBaseObject(object):
     def __tablename__(cls):
         return cls.__name__.lower()
 
-    id = Column(Integer, primary_key=True)
+    id = Column(String(42), primary_key=True)
     created_at = Column(DateTime(timezone=True))
     
     def __init__(self):
