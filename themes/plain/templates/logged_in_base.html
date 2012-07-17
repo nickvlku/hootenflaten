@@ -31,6 +31,31 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="{{ theme_static('bootstrap/js/date.js') }}"/></script>
     <script src="{{ theme_static('bootstrap/js/plain.js') }}"/></script>
+    <script type='text/javascript'>
+        hootenflaten.awesome_status = function(status_id) {
+            $.getJSON('{{url_for('hootenflaten_status.status_awesome')}}',
+            {
+                id: status_id
+            }, function(data) {
+                if (data.awesome_list.length > 0) {
+                    var names = [];
+                    $(data.awesome_list).each(function(user) {
+                        user_string = '<i><a href="/users/' + this.user_id + '">' + this.first_name + ' ' + this.last_name + '</a></i>';
+                        names.push(user_string)
+                    });
+                    $(".awesome_list[status_id='"+ data.id + "']").each(function() {
+                        this.innerHTML = names.join(",") + "  awesome'ed this<br/>";
+                    })
+                }
+                else {
+                    $(".awesome_list[status_id='"+ data.id + "']").each(function() {
+                        this.innerHTML = "";
+                    });
+                }
+            });
+            return false;
+        };
+    </script>
     {% endblock %}
 
     {% endblock %}
@@ -168,7 +193,16 @@
                         <div class="status_img"><img src="{{status.user.profile_image}}" /></div>
                         <div class="status_text"><a href="#" class="blue">{{status.user.full_name}}</a>
                             <p class="text">{{status.status_update}}</p>
-                            <div class="date" date_id="{{status.id}}">{{status.created_at}} UTC</div><div class="date"> &middot; <a href="#" class="light_blue">
+                            <div class="date" date_id="{{status.id}}">{{status.created_at}} UTC</div><div class="date"> &middot;
+                                <span class="awesome_list" status_id="{{status.id}}">
+                                {% if status.awesome_list %}
+                                    {% for user in status.awesome_list %}
+                                        <i><a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a></i> {% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                    awesome'ed this<br/>
+                                {% endif %}
+                                </span>
+                                <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">
                                 Awesome!</a> &middot; <a href="#" class="light_blue">Comment</a></div>
                         </div>
                         <div class="clear"></div>
@@ -177,6 +211,9 @@
                         $(function() {
                             var status_date = $("div[date_id='{{status.id}}']")[0].innerHTML;
                             $("div[date_id='{{status.id}}']")[0].innerHTML = new Date(status_date).toString('h:mm:ss tt dddd, MMMM dd, yyyy');
+                            $("#awesome_{{status.id}}").click(function() {
+                                hootenflaten.awesome_status($(this).attr("status_id"));
+                            })
                         });
                     </script>
                 {% endfor %}
@@ -275,6 +312,7 @@
                 return false;
             });
         });
+
 </script>
 
 {% endblock %}

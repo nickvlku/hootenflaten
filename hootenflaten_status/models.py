@@ -48,15 +48,23 @@ class StatusUpdate(HootenflattenBaseObject, IsCommentableMixin, db.Model):
             id = self.id,
             status_update = self.status_update,
             references_json = ref_json,
-            awesomes = self.awesome_list,
             comments = self.comments,
             user = dict(
                 id = self.user.id,
                 full_name = self.user.full_name,
                 profile_image = self.user.profile_image
             ),
-            created_on = self.created_at.toordinal()
+            created_on = self.created_at.toordinal(),
+            awesome_list = []
         )
+        for user in self.awesome_list:
+            json_dict['awesome_list'].append({
+                'user_id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'profile_image': user.profile_image
+            })
+
         return json.dumps(json_dict)
 
 db.create_all()

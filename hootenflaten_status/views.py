@@ -19,3 +19,19 @@ def status_post():
     db.session.commit()
 
     return render("status.html", status=s)
+
+@hootenflaten_status.route("/_awesome", methods=['GET'])
+@login_required
+def status_awesome():
+    id = request.args.get('id')
+    s = StatusUpdate.query.filter_by(id=id).first()
+    if s is not None:
+        if current_user in s.awesome_list:
+            s.awesome_list.remove(current_user)
+        else:
+            s.awesome_list.append(current_user)
+    db.session.add(s)
+    db.session.commit()
+
+    return s.to_json()
+
