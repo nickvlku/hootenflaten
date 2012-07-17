@@ -57,6 +57,35 @@
     resize:none;
 }
 
+.comment_form {
+    margin-top: 5px;
+    background-color: whiteSmoke;
+    border: 1px solid silver;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    width:370px;
+    margin-left: 20px;
+}
+.comment_form img {
+    padding-right: 10px;
+    float: left;
+}
+.comment_box {
+    font-family:"lucida grande", tahoma, verdana, arial, sans-serif;
+    color:#808080;
+    width: 300px;
+    height: 40px;
+    float: left;
+    padding:5px 0 0 5px;
+    margin:0;
+    border:solid #b4bbcd 1px;
+    outline:none;
+    resize:none;
+
+}
+
+
 .share{
     color:#808080;
     padding:0 12px 2px 0;
@@ -114,6 +143,33 @@
 .status_text{
     padding:0 10px 0 10px;
     float:left;
+}
+
+.status_comments {
+    margin-top: 10px;
+    margin-left: 10px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 20px;
+    background-color: whiteSmoke;
+    border: 1px solid silver;
+}
+.status_comments  img {
+    padding-right: 15px;
+    float: left;
+}
+
+.status_comments .comment_first {
+    padding-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 10px;
+}
+
+.status_comments .comment {
+    padding-bottom: 10px;
+    border-top: 2px solid silver;
+    padding-top: 10px;
 }
 
 .date{
