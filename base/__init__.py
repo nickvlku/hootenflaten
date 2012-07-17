@@ -15,6 +15,10 @@ from base.extensions import init_extensions
 
 app = Flask(__name__)
 app.config.from_object('base.default_settings.Config')
+try:
+    app.config.from_envvar('HOOTENFLATEN_SETTINGS')
+except RuntimeError:
+    app.logger.warning("You have not specified a HOOTENFLATEN_SETTINGS environment variable.  You have no overrides from the default")
 
 db = SQLAlchemy(app)
 
@@ -55,10 +59,6 @@ def instance_loader(app):
 
 setup_themes(app, app_identifier="hootenflaten", loaders=[instance_loader, packaged_themes_loader, theme_paths_loader])
 
-try:
-	app.config.from_envvar('HOOTENFLATEN_SETTINGS')
-except RuntimeError:
-	app.logger.warning("You have not specified a HOOTENFLATEN_SETTINGS environment variable.  You have no overrides from the default")
 
 import base.view_helpers
 import base.views

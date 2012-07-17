@@ -72,10 +72,10 @@ def register_facebook_account_post():
 
 @fb_auth.route('/complete', methods=['GET'])
 def bounceback_get():
-    args = dict(client_id=current_app.config.get('FACEBOOK').get('ID'), redirect_uri=request.base_url)
+    args = dict(client_id=current_app.config.get('FACEBOOK_ID'), redirect_uri=request.base_url)
     try:
         fb_verification_code =  request.args.get('code')
-        args["client_secret"] = current_app.config.get('FACEBOOK').get('SECRET')
+        args["client_secret"] = current_app.config.get('FACEBOOK_SECRET')
         args["code"] = fb_verification_code
     except Exception,e:
         current_app.logger.error("Error getting facebook verification code: %s" % (e))

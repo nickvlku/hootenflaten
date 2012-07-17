@@ -4,7 +4,7 @@
 
     {%block head %}
     <meta charset="utf-8">
-    <title>{% block title %}{% block site_title %}{{config.SITE_SETTINGS.SHORT_NAME}}{% endblock %} {% block page_title %} {% endblock %} {% endblock %}</title>
+    <title>{% block title %}{% block site_title %}{{config.SHORT_NAME}}{% endblock %} {% block page_title %} {% endblock %} {% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{% block site_description%}{%endblock%}">
     <meta name="author" content="{% block author%}{%endblock%}">
@@ -71,7 +71,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="/">{{config.SITE_SETTINGS.SHORT_NAME}}</a>
+            <a class="brand" href="/">{{config.SHORT_NAME}}</a>
             {% if current_user.is_authenticated() %}
             <div class="btn-group pull-right">
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -131,7 +131,7 @@
                 </li>
                 <li class="divider"></li>
                 <li class="nav-header">
-                    {{config.SITE_SETTINGS.SHORT_NAME}}
+                    {{config.SHORT_NAME}}
                 </li>
 
                 <li class="active">
@@ -228,6 +228,13 @@
                         <div class="date">12:15 PM EDT June 14, 2013 &middot; <a href="#" class="light_blue">
                             Awesome!</a> &middot; <a href="#" class="light_blue">Comment</a></div>
                     </div>
+                    <div class="status_comments">
+                        <div class="comment">
+                            <img src="{{current_user.profile_image}}" height=18 width=18><a href="/users/1">Nick Vlku</a>
+                            This is a comment about this post.  Love it!
+                            <div class="date">12:19 PM EDT June 14, 2013.</div>
+                        </div>
+                    </div>
                     <div class="clear"></div>
                 </div>
 
@@ -282,7 +289,7 @@
 
     {% block footer %}
     <footer>
-        <p>&copy; {{config.SITE_SETTINGS.FULL_NAME}} 2012 | Powered by Hootenflaten</p>
+        <p>&copy; {{config.FULL_NAME}} 2012 | Powered by Hootenflaten</p>
     </footer>
     {% endblock footer %}
 

@@ -34,7 +34,7 @@
                 <div class="span12" id="example-1" >
                     <div class="span8 well">
                         <form action="{{ url_for('auth.authenticate') }}" method="POST"  class="form-horizontal">
-                            <legend>{{config.SITE_SETTINGS.SHORT_NAME}} Login</legend>
+                            <legend>{{config.SHORT_NAME}} Login</legend>
                             {{input (form.username, errors=form.errors) }}
                             {{input (form.password, errors=form.errors) }}
                             {{input (form.remember, errors=form.errors) }}

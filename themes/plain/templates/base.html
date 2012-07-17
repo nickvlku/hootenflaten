@@ -4,7 +4,7 @@
 
 {%block head %}
 <meta charset="utf-8">
-<title>{% block title %}{% block site_title %}{{config.SITE_SETTINGS.SHORT_NAME}}{% endblock %} {% block page_title %} {% endblock %} {% endblock %}</title>
+<title>{% block title %}{% block site_title %}{{config.SHORT_NAME}}{% endblock %} {% block page_title %} {% endblock %} {% endblock %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="{% block site_description%}{%endblock%}">
 <meta name="author" content="{% block author%}{%endblock%}">
@@ -272,7 +272,7 @@
 
     {% block footer %}
     <footer>
-        <p>&copy; {{config.SITE_SETTINGS.FULL_NAME}} 2012 | Powered by Hootenflaten</p>
+        <p>&copy; {{config.FULL_NAME}} 2012 | Powered by Hootenflaten</p>
     </footer>
     {% endblock footer %}
 

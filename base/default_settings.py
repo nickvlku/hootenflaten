@@ -1,20 +1,17 @@
 class Config(object):
     DEBUG = True
     SECRET_KEY = 'SECRET-THIS-SHOULD-BE-CHANGED'
-    SQLALCHEMY_DATABASE_URI  = 'mysql://hootenflaten_user@127.0.0.1/hootenflaten'
+    SQLALCHEMY_DATABASE_URI  = 'mysql://root@127.0.0.1/hootenflaten'
     SECURITY_PASSWORD_HASH = 'bcrypt'
 
-    SITE_SETTINGS = {
-      'SHORT_NAME'      : 'Hooten',
-      'FULL_NAME'       : "HootenFlaten: Social in a Box",
-      'FACEBOOK_AUTH'   : True
-    }
-
-    FACEBOOK = {
-        'ID' : 'FACEBOOK_SECRET_ID',
-        'SECRET' : 'FACEBOOK_SECRET_KEY',
-        'REDIRECT_URI': 'http://idev.hootenflaten.org:5000/facebook/complete',
-        'SCOPES': [
+    SHORT_NAME = 'Hooten'
+    FULL_NAME = 'HootenFlaten: Social in a Box'
+    
+    FACEBOOK_AUTH = True 
+    FACEBOOK_ID = 'FACEBOOK_SECRET_ID'
+    FACEBOOK_SECRET = 'FACEBOOK_SECRET_KEY'
+    FACEBOOK_REDIRECT_URI = 'http://idev.hootenflaten.org:5000/facebook/callback'
+    FACEBOOK_SCOPES =  [
             'user_about_me',
             'user_birthday',
             'user_checkins',
@@ -38,8 +35,7 @@ class Config(object):
             'email',
             'create_event',
             'rsvp_event',
-            ]
-    }
+    ]
 
     EXTENSIONS = list(['hootenflaten_auth', 'hootenflaten_status'])
     EXTENSIONS.append('facebook_auth')
