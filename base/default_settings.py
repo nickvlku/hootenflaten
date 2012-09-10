@@ -10,7 +10,7 @@ class Config(object):
     FACEBOOK_AUTH = True 
     FACEBOOK_ID = 'FACEBOOK_SECRET_ID'
     FACEBOOK_SECRET = 'FACEBOOK_SECRET_KEY'
-    FACEBOOK_REDIRECT_URI = 'http://idev.hootenflaten.org:5000/facebook/callback'
+    FACEBOOK_REDIRECT_URL = 'http://idev.hootenflaten.org:5000/facebook/callback'
     FACEBOOK_SCOPES =  [
             'user_about_me',
             'user_birthday',
