@@ -63,3 +63,7 @@ setup_themes(app, app_identifier="hootenflaten", loaders=[instance_loader, packa
 import base.view_helpers
 import base.views
 import base.models
+
+from time import mktime
+
+app.jinja_env.filters['mktime'] = mktime
