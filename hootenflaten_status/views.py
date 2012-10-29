@@ -18,7 +18,8 @@ def status_post():
     s.user = current_user
     db.session.add(s)
     db.session.commit()
-
+    db.session.flush()
+    id = s.id
     return render("status.html", status=s)
 
 @hootenflaten_status.route("/_awesome", methods=['GET'])

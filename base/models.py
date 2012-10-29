@@ -15,19 +15,19 @@ class HootenflattenBaseObject(object):
     def __tablename__(cls):
         return cls.__name__.lower()
 
-    id = Column(String(42), primary_key=True)
-    created_at = Column(DateTime(timezone=True))
+    id = db.Column(db.String(42), primary_key=True)
+    created_at = db.Column(db.DateTime(timezone=True))
     
     def __init__(self):
-        self.id = uuid.uuid4()
+        self.id = str(uuid.uuid4())
         self.created_at = datetime.datetime.utcnow()
 
 class Comment(db.Model, HootenflattenBaseObject):
     __tablename__ = "comment"
     
-    comment = Column(Text)
-    created_at = Column(DateTime(timezone=True))
-    user_id = Column(Integer, ForeignKey('user.id'))
+    comment = db.Column(db.Text)
+    created_at = db.Column(db.DateTime(timezone=True))
+    user_id = db.Column(db.Integer, ForeignKey('user.id'))
     
     user = relationship("User")
 
