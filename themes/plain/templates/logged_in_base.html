@@ -31,6 +31,8 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="{{ theme_static('bootstrap/js/date.js') }}"/></script>
     <script src="{{ theme_static('bootstrap/js/plain.js') }}"/></script>
+    <script src="{{ theme_static('js/common.js') }}"/></script>
+
     <script type='text/javascript'>
         hootenflaten.awesome_status = function(status_id) {
             $.getJSON('{{url_for('hootenflaten_status.status_awesome')}}',
@@ -193,7 +195,7 @@
                         <div class="status_img"><img src="{{status.user.profile_image}}" /></div>
                         <div class="status_text"><a href="#" class="blue">{{status.user.full_name}}</a>
                             <p class="text">{{status.status_update}}</p>
-                            <span class="date" date_id="{{status.id}}">{{status.created_at}} UTC</span>
+                            <span class="date" date_id="{{status.id}}">{{status.created_at.timetuple()|mktime}}</span>
                             <span class="date"> | <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">Awesome!</a> &middot; <a href="#" status_id="{{status.id}}" class="light_blue comment_link">Comment</a></span>
                             <div class="date">
                                 <span class="awesome_list" status_id="{{status.id}}">
@@ -216,7 +218,8 @@
                     <script type="text/javascript">
                         $(function() {
                             var status_date = $("span[date_id='{{status.id}}']")[0].innerHTML;
-                            $("span[date_id='{{status.id}}']")[0].innerHTML = new Date(status_date).toString('h:mm:ss tt dddd, MMMM dd, yyyy');
+                            result = localize_time(status_date);
+                            $("span[date_id='{{status.id}}']")[0].innerHTML = result;
                             $("#awesome_{{status.id}}").click(function() {
                                 hootenflaten.awesome_status($(this).attr("status_id"));
                                 return false;

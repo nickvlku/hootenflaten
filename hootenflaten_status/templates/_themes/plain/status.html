@@ -2,7 +2,7 @@
     <div class="status_img"><img src="{{status.user.profile_image}}" /></div>
     <div class="status_text"><a href="#" class="blue">{{status.user.full_name}}</a>
         <p class="text">{{status.status_update}}</p>
-        <div class="date" date_id="{{status.id}}">{{status.created_at}} UTC</div><div class="date"> &middot;
+        <div class="date" date_id="{{status.id}}">{{status.created_at.timetuple()|mktime}}</div><div class="date"> &middot;
             <span class="awesome_list" status_id="{{status.id}}">
             {% if status.awesome_list %}
                 {% for user in status.awesome_list %}
