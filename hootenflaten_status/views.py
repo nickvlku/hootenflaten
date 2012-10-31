@@ -19,7 +19,6 @@ def status_post():
     db.session.add(s)
     db.session.commit()
     db.session.flush()
-    id = s.id
     return render("status.html", status=s)
 
 @hootenflaten_status.route("/_awesome", methods=['GET'])
@@ -37,7 +36,24 @@ def status_awesome():
 
         return s.to_json()
     else:
-        return "{}"
+        return jsonify()
+
+@hootenflaten_status.route("/_delete", methods=['GET'])
+@login_required
+def status_delete():
+    id = request.args.get('id')
+    s = StatusUpdate.query.filter_by(id=id).first()
+    if s is not None:
+        if s.user == current_user:
+            s.active = False
+            db.session.add(s)
+            db.session.commit()
+            response = jsonify(status="SUCCESS")
+            return response
+        else:
+            return jsonify(status="NOTAUTHORIZED")
+    else:
+        return jsonify(status="FAIL")
 
 @hootenflaten_status.route("/_comment", methods=['GET'])
 @login_required
@@ -58,4 +74,4 @@ def status_comment():
 
         return s.to_json()
     else:
-        return "{}"
+        return jsonify()

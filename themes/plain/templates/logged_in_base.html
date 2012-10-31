@@ -57,6 +57,18 @@
             });
             return false;
         };
+        hootenflaten.delete_status = function(status_id) {
+            $.getJSON('{{url_for('hootenflaten_status.status_delete')}}',
+            {
+                id: status_id
+            }, function(data) {
+                if (data.status == "SUCCESS") {
+                    $(".load_status[status_id='"+status_id+"']").each(function() {
+                        $(this).hide('slow', function(){ $(this).remove(); });
+                    })
+                }
+            });
+        };
     </script>
     {% endblock %}
 
@@ -191,12 +203,13 @@
                 </div>
 
                 {% for status in statuses %}
-                    <div class="load_status" status_id="{{status.id}}">
+                    <div class="load_status" status_id="{{status.id}}" id="main_status_{{status.id}}">
                         <div class="status_img"><img src="{{status.user.profile_image}}" /></div>
                         <div class="status_text"><a href="#" class="blue">{{status.user.full_name}}</a>
                             <p class="text">{{status.status_update}}</p>
                             <span class="date" date_id="{{status.id}}">{{status.created_at.timetuple()|mktime}}</span>
-                            <span class="date"> | <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">Awesome!</a> &middot; <a href="#" status_id="{{status.id}}" class="light_blue comment_link">Comment</a></span>
+                            <span class="date"> | <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">Awesome!</a> &middot; <a href="#" status_id="{{status.id}}" class="light_blue comment_link">Comment</a>
+                            {% if status.user == current_user %} &middot; <a href="#" id="delete_{{status.id}}" status_id="{{status.id}}" class="light_blue">Delete</a> {% endif %}</span>
                             <div class="date">
                                 <span class="awesome_list" status_id="{{status.id}}">
                                 {%- if status.awesome_list -%}
@@ -224,6 +237,11 @@
                                 hootenflaten.awesome_status($(this).attr("status_id"));
                                 return false;
                             })
+                            $("#delete_{{status.id}}").click(function() {
+                                hootenflaten.delete_status($(this).attr("status_id"));
+                                return false;
+                            })
+
                         });
                     </script>
                 {% endfor %}

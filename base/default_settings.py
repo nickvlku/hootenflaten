@@ -39,3 +39,4 @@ class Config(object):
 
     EXTENSIONS = list(['hootenflaten_auth', 'hootenflaten_status'])
     EXTENSIONS.append('facebook_auth')
+

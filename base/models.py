@@ -1,5 +1,6 @@
 import datetime
 import uuid
+import hashlib
 
 from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table, Text, Float
 from sqlalchemy.orm import relationship
@@ -9,6 +10,8 @@ from sqlalchemy.types import Boolean
 from base import db
 from base.custom_sql_fields import ChoiceType, JSONEncodedDict
 
+from flask import current_app
+
 class HootenflattenBaseObject(object):
 
     @declared_attr
@@ -17,10 +20,15 @@ class HootenflattenBaseObject(object):
 
     id = db.Column(db.String(42), primary_key=True)
     created_at = db.Column(db.DateTime(timezone=True))
-    
+    hootenflaten_site_id = db.Column(db.String(42))
+    active = db.Column(db.Boolean())
+
     def __init__(self):
         self.id = str(uuid.uuid4())
         self.created_at = datetime.datetime.utcnow()
+        self.hootenflaten_site_id = hashlib.md5(current_app.config['SHORT_NAME']).hexdigest()
+        self.active = True
+
 
 class Comment(db.Model, HootenflattenBaseObject):
     __tablename__ = "comment"
