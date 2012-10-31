@@ -9,6 +9,8 @@ from hootenflaten_status import hootenflaten_status
 from hootenflaten_status.models import StatusUpdate
 from site_configuration.themes import render
 
+import uuid
+
 @hootenflaten_status.route("/_post", methods=['GET'])
 @login_required
 def status_post():
@@ -67,11 +69,13 @@ def status_comment():
         c = Comment()
         c.comment = request.args.get('comment')
         c.user = current_user
-        s.comments.append(c)
         db.session.add(c)
+
+        s.comments.append(c)
         db.session.add(s)
+
         db.session.commit()
 
-        return s.to_json()
+        return render("comment.html", comment=c)
     else:
-        return jsonify()
+        return jsonify(status="FAIL")

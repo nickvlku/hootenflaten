@@ -1,6 +1,7 @@
 import datetime
 import uuid
 import hashlib
+import json
 
 from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table, Text, Float
 from sqlalchemy.orm import relationship
@@ -30,17 +31,54 @@ class HootenflattenBaseObject(object):
         self.active = True
 
 
-class Comment(db.Model, HootenflattenBaseObject):
+# TODO: Need to abstract this out to an IsAwesomeableMixin
+comment_user_awesome_table = db.Table('comment_user_awesomes',
+    db.Column('user_id', Integer, ForeignKey('user.id')),
+    db.Column('comment_id', String(45), ForeignKey('comment.id')))
+
+class Comment(HootenflattenBaseObject, db.Model):
     __tablename__ = "comment"
     
     comment = db.Column(db.Text)
-    created_at = db.Column(db.DateTime(timezone=True))
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
-    
+
+    awesome_list = db.relationship("User", secondary=comment_user_awesome_table, backref=db.backref('awesomed_comments', lazy='dynamic'))
+
     user = relationship("User")
 
     def __repr__(self):
         return "<Comment: %r - %r>" % (self.comment, self.user_id)
+
+    def to_dict(self):
+        comment_dict = dict(
+            id = self.id,
+            comment = self.comment,
+            user = dict(
+                id = self.user.id,
+                full_name = self.user.full_name,
+                profile_image = self.user.profile_image,
+                first_name = self.user.first_name,
+                last_name = self.user.last_name,
+            ),
+            created_on = self.created_at.toordinal(),
+            awesome_list = []
+        )
+
+        for user in self.awesome_list:
+            comment_dict['awesome_list'].append({
+                'user_id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'full_name': user.full_name,
+                'profile_image': user.profile_image
+            })
+
+        return comment_dict
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
+
 
 class IsCommentableMixin(object):
 
@@ -53,7 +91,7 @@ class IsCommentableMixin(object):
             Column("%s_id" % cls.__tablename__, ForeignKey("%s.id" % cls.__tablename__),
             primary_key=True)
         )
-        return relationship(Comment, secondary=comment_association, backref="%s_parents" % cls.__name__.lower())
+        return relationship(Comment, order_by="Comment.created_at", secondary=comment_association, backref="%s_parents" % cls.__name__.lower())
 
 class Extension(db.Model):
     __tablename__ = 'extensions'
