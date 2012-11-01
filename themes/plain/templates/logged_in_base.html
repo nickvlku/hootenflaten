@@ -57,6 +57,27 @@
             });
             return false;
         };
+        hootenflaten.delete_status = function(status_id) {
+            $.getJSON('{{url_for('hootenflaten_status.status_delete')}}',
+            {
+                id: status_id
+            }, function(data) {
+                if (data.status == "SUCCESS") {
+                    $(".load_status[status_id='"+status_id+"']").each(function() {
+                        $(this).hide('slow', function(){ $(this).remove(); });
+                    })
+                }
+            });
+        };
+        hootenflaten.comment = function(status_id, comment) {
+            $.get("{{url_for('hootenflaten_status.status_comment')}}",
+            {
+                id: status_id,
+                comment: comment
+            }, function(data) {
+                $(".comment_list[status_id='"+ status_id + "']").append(data);
+            });
+        }
     </script>
     {% endblock %}
 
@@ -191,12 +212,10 @@
                 </div>
 
                 {% for status in statuses %}
-                    <div class="load_status" status_id="{{status.id}}">
+                    <div class="load_status" status_id="{{status.id}}" id="main_status_{{status.id}}">
                         <div class="status_img"><img src="{{status.user.profile_image}}" /></div>
                         <div class="status_text"><a href="#" class="blue">{{status.user.full_name}}</a>
                             <p class="text">{{status.status_update}}</p>
-                            <span class="date" date_id="{{status.id}}">{{status.created_at.timetuple()|mktime}}</span>
-                            <span class="date"> | <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">Awesome!</a> &middot; <a href="#" status_id="{{status.id}}" class="light_blue comment_link">Comment</a></span>
                             <div class="date">
                                 <span class="awesome_list" status_id="{{status.id}}">
                                 {%- if status.awesome_list -%}
@@ -205,12 +224,40 @@
                                     {%- endfor -%}
                                     awesome'ed this<br/>
                                 {%- endif -%}</span></div>
-                            <div class="comment_form" style="display:none;" status_id="{{status.id}}">
-                                <img src="{{current_user.profile_image}}" height="36" width="36">
-                                <textarea class="comment_box" name="comment_post" status_id="{{status.id}}" placeholder="Got a comment?"></textarea>
-                                <div class="clear"></div>
 
+                            <span class="date" date_id="{{status.id}}">{{status.created_at.timetuple()|mktime}}</span>
+                            <span class="date"> | <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">Awesome!</a> &middot; <a href="#" status_id="{{status.id}}" class="light_blue comment_link">Comment</a>
+                            {% if status.user == current_user %} &middot; <a href="#" id="delete_{{status.id}}" status_id="{{status.id}}" class="light_blue">Delete</a> {% endif %}</span>
+                            {% if status.comments %}
+                            <div class="status_comments">
+                                <div class="comment_list" status_id="{{status.id}}">
+                                {% for comment in status.comments %}
+                                {% if loop.first %}
+                                <div class="comment_first" comment_id="{{ comment.id }}">
+                                {% else %}
+                                <div class="comment" comment_id="{{ comment.id }}">
+                                {% endif %}
+                                    <a href="/users/{{comment.user.id}}"><img src="{{comment.user.profile_image}}" height=36 width=36 class="comment_photo"></a> <a href="/users/{{comment.user.id}}">{{comment.user.full_name}}</a>
+                                    {{comment.comment}}<br/>
+                                    <span class="date">{{comment.created_at}} | <a href="#" comment_id="{{comment.id}}" id="awesome_{{comment.id}}" class="light_blue">Awesome!</a></span>
+                                </div>
+                                {% endfor %}
+                                </div>
+                                <div class="comment" status_id="{{status.id}}">
+                                    <img src="{{current_user.profile_image}}" height="36" width="36">
+                                    <textarea class="comment_box" name="comment_post" status_id="{{status.id}}" placeholder="Got a comment?"></textarea>
+                                    <div class="clear"></div>
+                                </div>
                             </div>
+                            {% endif %}
+
+                                {% if not status.comments %}
+                                <div class="comment_form" style="display:none;" status_id="{{status.id}}">
+                                    <img src="{{current_user.profile_image}}" height="36" width="36">
+                                    <textarea class="comment_box" name="comment_post" status_id="{{status.id}}" placeholder="Got a comment?"></textarea>
+                                    <div class="clear"></div>
+                                </div>
+                                {% endif %}
 
                         </div>
                         <div class="clear"></div>
@@ -224,6 +271,11 @@
                                 hootenflaten.awesome_status($(this).attr("status_id"));
                                 return false;
                             })
+                            $("#delete_{{status.id}}").click(function() {
+                                hootenflaten.delete_status($(this).attr("status_id"));
+                                return false;
+                            })
+
                         });
                     </script>
                 {% endfor %}
@@ -339,6 +391,7 @@
                     $("#new_statuses > [added='true']").each(function(element) {
                         $(this).fadeIn("slow");
                     });
+                    $('textarea[name="status_update_box"]').val("");
                 });
                 return false;
             });
@@ -346,8 +399,15 @@
             $(".comment_link").click(function() {
                 var status_id = $(this).attr("status_id");
                 $(".comment_form[status_id='"+ status_id +"']").show();
+                return false;
             });
+            $(".comment_box").keypress(function(e) {
+                if (e.which == 13) {
+                    hootenflaten.comment($(this).attr("status_id"), $(this).val());
+                }
+            })
         });
+
 
 </script>
 

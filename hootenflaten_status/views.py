@@ -9,6 +9,8 @@ from hootenflaten_status import hootenflaten_status
 from hootenflaten_status.models import StatusUpdate
 from site_configuration.themes import render
 
+import uuid
+
 @hootenflaten_status.route("/_post", methods=['GET'])
 @login_required
 def status_post():
@@ -18,7 +20,7 @@ def status_post():
     s.user = current_user
     db.session.add(s)
     db.session.commit()
-
+    db.session.flush()
     return render("status.html", status=s)
 
 @hootenflaten_status.route("/_awesome", methods=['GET'])
@@ -36,7 +38,24 @@ def status_awesome():
 
         return s.to_json()
     else:
-        return "{}"
+        return jsonify()
+
+@hootenflaten_status.route("/_delete", methods=['GET'])
+@login_required
+def status_delete():
+    id = request.args.get('id')
+    s = StatusUpdate.query.filter_by(id=id).first()
+    if s is not None:
+        if s.user == current_user:
+            s.active = False
+            db.session.add(s)
+            db.session.commit()
+            response = jsonify(status="SUCCESS")
+            return response
+        else:
+            return jsonify(status="NOTAUTHORIZED")
+    else:
+        return jsonify(status="FAIL")
 
 @hootenflaten_status.route("/_comment", methods=['GET'])
 @login_required
@@ -50,11 +69,13 @@ def status_comment():
         c = Comment()
         c.comment = request.args.get('comment')
         c.user = current_user
-        s.comments.append(c)
         db.session.add(c)
+
+        s.comments.append(c)
         db.session.add(s)
+
         db.session.commit()
 
-        return s.to_json()
+        return render("comment.html", comment=c)
     else:
-        return "{}"
+        return jsonify(status="FAIL")
