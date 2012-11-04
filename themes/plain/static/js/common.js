@@ -1,12 +1,14 @@
 localize_time = function(status_date) {
-    d = new Date(0)
-    d.setUTCSeconds(status_date*1000)
-    local_time = d.toString('hh:mm:ss tt dddd, MMMM dd, yyyy');
-    if (local_time.indexOf("00:") == 0) {
-        s = local_time.split(":")
-        s[0] = "12"
-        local_time = s.join(":")
+    var d = new Date(Date.UTC(status_date))
+    d.setTime(status_date*1000)
+    d.setTimezone()
+    var local_day = d.toLocaleDateString()
+    var local_time = d.toLocaleTimeString()
+    var times = local_time.split(":")
+    var ampm = "AM"
+    if (times[0] > 12) {
+        times[0] = times[0] - 12;
+        ampm = "PM"
     }
-    return local_time;
+    return times.join(":") + " " + ampm + " " + local_day;
 };
-
