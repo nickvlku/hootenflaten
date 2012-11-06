@@ -1,0 +1,24 @@
+<div class="status_module" id="hootenflaten_status">
+    <div class="status_post" id="hootenflaten_status_post" >
+        <div class="con">
+            <div class="pd">
+                <div class="status">Post a Status Update</div>
+                <div class="loading"></div>
+            </div>
+            <div class="img_top"></div>
+            <div class="text_status">
+                <textarea class="input_box" name="status_update_box" placeholder="What's up?"></textarea></div>
+            <button class="btn btn-primary" style="float:right; margin-top:5px;" id="post_status">Post</button><span style="float:right;" class="date"><input type="checkbox" > &crarr; &nbsp;&nbsp;&nbsp;</span>
+        </div>
+    </div>
+
+    <div id="new_statuses">
+
+    </div>
+    {% for status in statuses %}
+    {% include "/_themes/plain/hootenflaten_status/status.html" %}
+    {% endfor %}
+
+
+
+</div>

@@ -19,7 +19,7 @@
         <div class="status_comments" {% if not status.comments %} style="display:none;" {% endif %}>
             <div class="comment_list" status_id="{{status.id}}">
                 {% for comment in status.comments %}
-                {% include "/_themes/plain/comment.html" %}
+                {% include "/_themes/plain/hootenflaten_status/comment.html" %}
                 {% endfor %}
             </div>
             <div {% if not status.comments %} class="comment_first comment_form"  style="display:none;" {% else %} class="comment comment_form"{% endif %} status_id="{{status.id}}">

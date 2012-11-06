@@ -200,31 +200,9 @@
                 <p>This is a special announcement panel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut ipsum leo. Suspendisse quis libero eleifend tortor tempor convallis sit amet sit amet tellus. Phasellus vitae purus in orci pellentesque dignissim. Cras quis elit in sem vulputate pharetra vitae sit amet tortor. Fusce laoreet nulla in leo porta eu semper mauris placerat. Pellentesque fermentum venenatis quam, vel blandit purus consequat vel. Suspendisse posuere vestibulum diam, a pellentesque arcu molestie nec. Quisque nec neque et nunc porttitor lacinia. Maecenas iaculis risus ac lorem interdum at aliquam nibh molestie. Aenean sit amet nibh dignissim lorem dignissim semper. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse elementum mattis odio, et gravida nulla auctor tempus.</p>
             </div>
 
-            <div class="status_module" id="hootenflaten_status">
-                <div class="status_post" id="hootenflaten_status_post" >
-                    <div class="con">
-                        <div class="pd">
-                            <div class="status">Post a Status Update</div>
-                            <div class="loading"></div>
-                        </div>
-                        <div class="img_top"></div>
-                        <div class="text_status">
-                            <textarea class="input_box" name="status_update_box" placeholder="What's up?"></textarea></div>
-                        <button class="btn btn-primary" style="float:right; margin-top:5px;" id="post_status">Post</button><span style="float:right;" class="date"><input type="checkbox" > &crarr; &nbsp;&nbsp;&nbsp;</span>
-                    </div>
-                </div>
+            {% include "/_themes/plain/hootenflaten_status/main.html" %}
 
-                <div id="new_statuses">
-
-                </div>
-                {% for status in statuses %}
-                {% include "/_themes/plain/status.html" %}
-                {% endfor %}
-
-
-
-            </div>
-            {% endblock %}
+        {% endblock %}
         </div>
         <div class="span3">
             {% block right_side %}
