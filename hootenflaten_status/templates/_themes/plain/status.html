@@ -19,16 +19,8 @@
         <div class="status_comments" {% if not status.comments %} style="display:none;" {% endif %}>
             <div class="comment_list" status_id="{{status.id}}">
                 {% for comment in status.comments %}
-                {% if loop.first %}
-                <div class="comment_first" comment_id="{{ comment.id }}">
-                {% else %}
-                <div class="comment" comment_id="{{ comment.id }}">
-                    {% endif %}
-                    <a href="/users/{{comment.user.id}}"><img src="{{comment.user.profile_image}}" height=36 width=36 class="comment_photo"></a> <a href="/users/{{comment.user.id}}">{{comment.user.full_name}}</a>
-                    {{comment.comment}}<br/>
-                    <span class="date localtime">{{comment.created_at}}Z</span><span class="date"> | <a href="#" comment_id="{{comment.id}}" id="awesome_{{comment.id}}" class="light_blue">Awesome!</a></span>
-                </div>
-                    {% endfor %}
+                {% include "/_themes/plain/comment.html" %}
+                {% endfor %}
             </div>
             <div {% if not status.comments %} class="comment_first comment_form"  style="display:none;" {% else %} class="comment comment_form"{% endif %} status_id="{{status.id}}">
                 <img src="{{current_user.profile_image}}" height="36" width="36">

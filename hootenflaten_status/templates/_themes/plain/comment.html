@@ -1,5 +1,5 @@
-<div class="comment" comment_id="{{comment.id}}">
+<div class="comment" comment_id="{{ comment.id }}">
     <a href="/users/{{comment.user.id}}"><img src="{{comment.user.profile_image}}" height=36 width=36 class="comment_photo"></a> <a href="/users/{{comment.user.id}}">{{comment.user.full_name}}</a>
     {{comment.comment}}<br/>
-    <span class="date">{{comment.created_at}} | <a href="#" comment_id="{{comment.id}}" id="comment_{{comment.id}}" class="light_blue">Awesome!</a></span>
+    <span class="date localtime">{{comment.created_at}}Z</span><span class="date"> | <a href="#" comment_id="{{comment.id}}" id="awesome_{{comment.id}}" class="light_blue">Awesome!</a></span>
 </div>
