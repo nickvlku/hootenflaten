@@ -33,6 +33,7 @@
     <script src="{{ theme_static('bootstrap/js/plain.js') }}"/></script>
     <script src="{{ theme_static('js/common.js') }}"/></script>
     <script type="text/javascript" src="{{ theme_static('js/jquery.localtime-0.5.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('mustache.static', filename='mustache-loader.js') }}"></script>
 
     <script type='text/javascript'>
         $.localtime.setFormat("hh:mm:ss tt MMMMM dd, yyyy");
@@ -72,13 +73,15 @@
                 }
             });
         };
-        hootenflaten.comment = function(status_id, comment) {
+        hootenflaten.comment = function(comment_form_box) {
+            var status_id = $(comment_form_box).attr("status_id");
             $.get("{{url_for('hootenflaten_status.status_comment')}}",
             {
                 id: status_id,
-                comment: comment
+                comment: $(comment_form_box).val()
             }, function(data) {
                 $(".comment_list[status_id='"+ status_id + "']").append(data);
+                $(comment_form_box).val("")
             });
         }
     </script>
@@ -207,123 +210,16 @@
                         <div class="img_top"></div>
                         <div class="text_status">
                             <textarea class="input_box" name="status_update_box" placeholder="What's up?"></textarea></div>
-                            <button class="btn btn-primary" style="float:right; margin-top:5px;" id="post_status">Post</button>
+                        <button class="btn btn-primary" style="float:right; margin-top:5px;" id="post_status">Post</button><span style="float:right;" class="date"><input type="checkbox" > &crarr; &nbsp;&nbsp;&nbsp;</span>
                     </div>
                 </div>
 
                 <div id="new_statuses">
-                </div>
 
+                </div>
                 {% for status in statuses %}
-                    <div class="load_status" status_id="{{status.id}}" id="main_status_{{status.id}}">
-                        <div class="status_img"><img src="{{status.user.profile_image}}" /></div>
-                        <div class="status_text"><a href="#" class="blue">{{status.user.full_name}}</a>
-                            <p class="text">{{status.status_update}}</p>
-                            <div class="date">
-                                <span class="awesome_list" status_id="{{status.id}}">
-                                {%- if status.awesome_list -%}
-                                    {%- for user in status.awesome_list -%}
-                                        <i><a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a></i> {% if not loop.last %}, {% endif %}
-                                    {%- endfor -%}
-                                    awesome'ed this<br/>
-                                {%- endif -%}</span></div>
-
-                            <span class="date localtime" date_id="{{status.id}}">{{status.created_at}}Z</span>
-                            <span class="date"> | <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">Awesome!</a> &middot; <a href="#" status_id="{{status.id}}" class="light_blue comment_link">Comment</a>
-                            {% if status.user == current_user %} &middot; <a href="#" id="delete_{{status.id}}" status_id="{{status.id}}" class="light_blue">Delete</a> {% endif %}</span>
-                            {% if status.comments %}
-                            <div class="status_comments">
-                                <div class="comment_list" status_id="{{status.id}}">
-                                {% for comment in status.comments %}
-                                {% if loop.first %}
-                                <div class="comment_first" comment_id="{{ comment.id }}">
-                                {% else %}
-                                <div class="comment" comment_id="{{ comment.id }}">
-                                {% endif %}
-                                    <a href="/users/{{comment.user.id}}"><img src="{{comment.user.profile_image}}" height=36 width=36 class="comment_photo"></a> <a href="/users/{{comment.user.id}}">{{comment.user.full_name}}</a>
-                                    {{comment.comment}}<br/>
-                                    <span class="date">{{comment.created_at}} | <a href="#" comment_id="{{comment.id}}" id="awesome_{{comment.id}}" class="light_blue">Awesome!</a></span>
-                                </div>
-                                {% endfor %}
-                                </div>
-                                <div class="comment" status_id="{{status.id}}">
-                                    <img src="{{current_user.profile_image}}" height="36" width="36">
-                                    <textarea class="comment_box" name="comment_post" status_id="{{status.id}}" placeholder="Got a comment?"></textarea>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-                            {% endif %}
-
-                                {% if not status.comments %}
-                                <div class="comment_form" style="display:none;" status_id="{{status.id}}">
-                                    <img src="{{current_user.profile_image}}" height="36" width="36">
-                                    <textarea class="comment_box" name="comment_post" status_id="{{status.id}}" placeholder="Got a comment?"></textarea>
-                                    <div class="clear"></div>
-                                </div>
-                                {% endif %}
-
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                    <script type="text/javascript">
-                        $(function() {
-                            $("#awesome_{{status.id}}").click(function() {
-                                hootenflaten.awesome_status($(this).attr("status_id"));
-                                return false;
-                            })
-                            $("#delete_{{status.id}}").click(function() {
-                                hootenflaten.delete_status($(this).attr("status_id"));
-                                return false;
-                            })
-
-                        });
-                    </script>
+                {% include "/_themes/plain/status.html" %}
                 {% endfor %}
-                <div class="load_status">
-                    <div class="status_img"><img src="{{current_user.profile_image}}" /></div>
-                    <div class="status_text"><a href="#" class="blue">Nick Vlku</a>
-                        <p class="text">Welcome to Hootenflaten!</p>
-                        <div class="well">
-                            <b><a href="http://hootenflaten.org">Hootenflaten Web Site</a></b><br/>
-                            Hootenflaten is social in a box.
-                        </div>
-                        <div class="date">12:15 PM EDT June 14, 2013 &middot; <a href="#" class="light_blue">
-                            Awesome!</a> &middot; <a href="#" class="light_blue">Comment</a></div>
-
-                        <div class="status_comments">
-                            <div class="comment_first">
-                                <img src="{{current_user.profile_image}}" height=36 width=36 class="comment_photo"><a href="/users/1">Nick Vlku</a>
-                                This is a comment about this post.  Love it!<br/>
-                                <span class="date">12:19 PM EDT June 14, 2013</span>
-                            </div>
-                            <div class="comment">
-                                <img src="{{current_user.profile_image}}" height=36 width=36 class="comment_photo"><a href="/users/1">Nick Vlku</a>
-                                This is a comment about this post.  Love it!<br/>
-                                <span class="date">12:19 PM EDT June 14, 2013</span>
-                            </div>
-                            <div class="comment">
-                                <img src="{{current_user.profile_image}}" height=36 width=36 class="comment_photo"><a href="/users/1">Nick Vlku</a>
-                                This is a comment about this post.  Love it!<br/>
-                                <span class="date">12:19 PM EDT June 14, 2013</span>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="clear"></div>
-                </div>
-
-                <div class="load_status">
-                    <div class="status_img"><img src="https://graph.facebook.com/1402096/picture" /></div>
-                    <div class="status_text"><a href="#" class="blue">Enia Titova</a>
-                        <p class="text">Test Post!</p>
-                        <img class="thumbnail" src="http://sphotos-a.xx.fbcdn.net/hphotos-ash4/396930_3732633712509_1541024994_n.jpg" width="200"/>
-                        <div class="date">1:21 PM EDT June 15, 2013 &middot; <a href="#" class="light_blue">
-                            Awesome!</a> &middot; <a href="#" class="light_blue">Comment</a></div>
-                    </div>
-                    <div class="clear"></div>
-                </div>
 
 
 
@@ -398,13 +294,17 @@
 
             $(".comment_link").click(function() {
                 var status_id = $(this).attr("status_id");
+                $(".comment_form[status_id='"+ status_id +"']").parent(".status_comments").show();
                 $(".comment_form[status_id='"+ status_id +"']").show();
+
                 return false;
             });
             $(".comment_box").keypress(function(e) {
                 if (e.which == 13) {
-                    hootenflaten.comment($(this).attr("status_id"), $(this).val());
+                    hootenflaten.comment(this);
+
                 }
+
             })
         });
 

@@ -4,3 +4,5 @@ Flask-Security
 MySQL-python
 Flask-Themes
 requests
+pystache
+-e git://github.com/bradleywright/flask-mustachejs.git#egg=flask_mustache

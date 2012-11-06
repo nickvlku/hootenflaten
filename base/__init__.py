@@ -5,6 +5,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.security import (User, Security, LoginForm,  login_required,
                                 roles_accepted, user_datastore)
 from flask.ext.security.datastore.sqlalchemy import SQLAlchemyUserDatastore
+from flask.ext.mustache import FlaskMustache
 
 from flaskext.themes import setup_themes, load_themes_from, packaged_themes_loader, theme_paths_loader
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -21,6 +22,7 @@ except RuntimeError:
     app.logger.warning("You have not specified a HOOTENFLATEN_SETTINGS environment variable.  You have no overrides from the default")
 
 db = SQLAlchemy(app)
+FlaskMustache(app)
 
 class UserAccountMixin():
     first_name = db.Column(db.String(50))

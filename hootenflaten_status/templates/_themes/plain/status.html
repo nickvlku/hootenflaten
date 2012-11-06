@@ -1,24 +1,57 @@
-<div class="load_status" status_id="{{status.id}}" style="display:none;" added='true'>
+<div class="load_status" status_id="{{status.id}}" id="main_status_{{status.id}}">
     <div class="status_img"><img src="{{status.user.profile_image}}" /></div>
     <div class="status_text"><a href="#" class="blue">{{status.user.full_name}}</a>
         <p class="text">{{status.status_update}}</p>
-        <div class="date" date_id="{{status.id}}">{{status.created_at.timetuple()|mktime}}</div><div class="date"> &middot;
-            <span class="awesome_list" status_id="{{status.id}}">
-            {% if status.awesome_list %}
-                {% for user in status.awesome_list %}
-                    <i><a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a></i> {% if not loop.last %}, {% endif %}
-                {% endfor %}
-                awesome'ed this<br/>
-            {% endif %}
-            </span>
-            <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">
-                Awesome!</a> &middot; <a href="#" class="light_blue">Comment</a></div>
+        <div class="date">
+                                <span class="awesome_list" status_id="{{status.id}}">
+                                {%- if status.awesome_list -%}
+                                    {%- for user in status.awesome_list -%}
+                                        <i><a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a></i> {% if not loop.last %}, {% endif %}
+                                    {%- endfor -%}
+                                    awesome'ed this<br/>
+                                {%- endif -%}</span>
+        </div>
+
+        <span class="date localtime" date_id="{{status.id}}">{{status.created_at}}Z</span>
+        <span class="date"> | <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">Awesome!</a> &middot; <a href="#" status_id="{{status.id}}" class="light_blue comment_link">Comment</a>
+                            {% if status.user == current_user %} &middot; <a href="#" id="delete_{{status.id}}" status_id="{{status.id}}" class="light_blue">Delete</a> {% endif %}</span>
+
+        <div class="status_comments" {% if not status.comments %} style="display:none;" {% endif %}>
+            <div class="comment_list" status_id="{{status.id}}">
+                {% for comment in status.comments %}
+                {% if loop.first %}
+                <div class="comment_first" comment_id="{{ comment.id }}">
+                {% else %}
+                <div class="comment" comment_id="{{ comment.id }}">
+                    {% endif %}
+                    <a href="/users/{{comment.user.id}}"><img src="{{comment.user.profile_image}}" height=36 width=36 class="comment_photo"></a> <a href="/users/{{comment.user.id}}">{{comment.user.full_name}}</a>
+                    {{comment.comment}}<br/>
+                    <span class="date localtime">{{comment.created_at}}Z</span><span class="date"> | <a href="#" comment_id="{{comment.id}}" id="awesome_{{comment.id}}" class="light_blue">Awesome!</a></span>
+                </div>
+                    {% endfor %}
+            </div>
+            <div {% if not status.comments %} class="comment_first comment_form"  style="display:none;" {% else %} class="comment comment_form"{% endif %} status_id="{{status.id}}">
+                <img src="{{current_user.profile_image}}" height="36" width="36">
+                <textarea class="comment_box" name="comment_post" status_id="{{status.id}}" placeholder="Got a comment?"></textarea>
+
+                <div class="clear"></div>
+
+            </div>
+        </div>
+
     </div>
     <div class="clear"></div>
 </div>
 <script type="text/javascript">
     $(function() {
-        var status_date = $("div[date_id='{{status.id}}']")[0].innerHTML;
-        $("div[date_id='{{status.id}}']")[0].innerHTML = new Date(status_date).toString('h:mm:ss tt dddd, MMMM dd, yyyy');
+        $("#awesome_{{status.id}}").click(function() {
+            hootenflaten.awesome_status($(this).attr("status_id"));
+            return false;
+        })
+        $("#delete_{{status.id}}").click(function() {
+            hootenflaten.delete_status($(this).attr("status_id"));
+            return false;
+        })
+
     });
 </script>

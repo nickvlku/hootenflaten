@@ -58,23 +58,15 @@
 }
 
 .comment_form {
-    margin-top: 5px;
-    background-color: whiteSmoke;
-    border: 1px solid silver;
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-bottom: 10px;
-    width:370px;
-    margin-left: 20px;
+
 }
 .comment_form img {
-    padding-right: 10px;
-    float: left;
+
 }
 .comment_box {
     font-family:"lucida grande", tahoma, verdana, arial, sans-serif;
     color:#808080;
-    width: 300px;
+    width: 400px;
     height: 30px;
     float: left;
     padding:5px 0 0 5px;
@@ -146,30 +138,30 @@
 }
 
 .status_comments {
-    margin-top: 5px;
-    margin-left: 5px;
-    padding-left: 10px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-right: 5px;
+    margin-top: 10px;
+    margin-left: 10px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 20px;
     background-color: whiteSmoke;
     border: 1px solid silver;
 }
 .status_comments  img {
-    padding-right: 5px;
+    padding-right: 15px;
     float: left;
 }
 
 .status_comments .comment_first {
     padding-bottom: 5px;
     padding-top: 5px;
-
+    padding-bottom: 10px;
 }
 
 .status_comments .comment {
-    padding-bottom: 5px;
-    border-top: 1px solid silver;
-    padding-top: 5px;
+    padding-bottom: 10px;
+    border-top: 2px solid silver;
+    padding-top: 10px;
 }
 
 .date{
@@ -199,13 +191,4 @@
 
 div.button_inside_border_blue:active{
     background-color:#4f6aa3;
-}
-
-.awesome_list {
-    font-size: .9em;
-    line-height: 10px;
-}
-.date {
-    font-size: .8em;
-    line-height: 10px;
 }
