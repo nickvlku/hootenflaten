@@ -77,6 +77,23 @@ def status_comment_delete():
         return jsonify(status="FAIL")
 
 
+@hootenflaten_status.route("/_comment/_awesome", methods=['GET'])
+@login_required
+def status_comment_awesome():
+    id = request.args.get('id')
+    c = Comment.query.filter_by(id=id).first()
+    if c is not None:
+        if current_user in c.awesome_list:
+            c.awesome_list.remove(current_user)
+        else:
+            c.awesome_list.append(current_user)
+        db.session.add(c)
+        db.session.commit()
+
+        return c.to_json()
+    else:
+        return jsonify()
+
 @hootenflaten_status.route("/_comment", methods=['GET'])
 @login_required
 def status_comment():

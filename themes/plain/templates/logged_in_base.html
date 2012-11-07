@@ -74,6 +74,29 @@
             });
         };
 
+        hootenflaten.awesome_comment = function(comment_id) {
+            $.getJSON('{{url_for('hootenflaten_status.status_comment_awesome')}}',
+            {
+                id: comment_id
+            }, function(data) {
+                if (data.awesome_list.length > 0) {
+                    var names = [];
+                    $(data.awesome_list).each(function(user) {
+                        user_string = '<i><a href="/users/' + this.user_id + '">' + this.first_name + ' ' + this.last_name + '</a></i>';
+                        names.push(user_string)
+                    });
+                    $(".awesome_list[comment_id='"+ data.id + "']").each(function() {
+                        this.innerHTML = names.join(",") + "  awesome'ed this &middot;";
+                    })
+                }
+                else {
+                    $(".awesome_list[comment_id='"+ data.id + "']").each(function() {
+                        this.innerHTML = "";
+                    });
+                }
+            });
+            return false;
+        };
         hootenflaten.delete_comment = function(comment_id) {
             $.getJSON('{{url_for('hootenflaten_status.status_comment_delete')}}',
             {
