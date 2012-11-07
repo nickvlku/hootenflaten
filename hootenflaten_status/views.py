@@ -21,7 +21,7 @@ def status_post():
     db.session.add(s)
     db.session.commit()
     db.session.flush()
-    return render("status.html", status=s)
+    return render("hootenflaten_status/status.html", status=s)
 
 @hootenflaten_status.route("/_awesome", methods=['GET'])
 @login_required
@@ -76,6 +76,6 @@ def status_comment():
 
         db.session.commit()
 
-        return render("comment.html", comment=c)
+        return render("hootenflaten_status/comment.html", comment=c)
     else:
         return jsonify(status="FAIL")

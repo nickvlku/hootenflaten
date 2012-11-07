@@ -12,7 +12,7 @@
                                 {%- endif -%}</span>
         </div>
 
-        <span class="date localtime" date_id="{{status.id}}">{{status.created_at}}Z</span>
+        <span class="date_{{status.id}} date" date_id="{{status.id}}"><script type="text/javascript">$(".date_{{status.id}}")[0].innerHTML = $.localtime.toLocalTime("{{status.created_at}}Z", "hh:mm:ss tt MMMMM dd, yyyy");</script></span>
         <span class="date"> | <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">Awesome!</a> &middot; <a href="#" status_id="{{status.id}}" class="light_blue comment_link">Comment</a>
                             {% if status.user == current_user %} &middot; <a href="#" id="delete_{{status.id}}" status_id="{{status.id}}" class="light_blue">Delete</a> {% endif %}</span>
 
