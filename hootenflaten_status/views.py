@@ -57,6 +57,26 @@ def status_delete():
     else:
         return jsonify(status="FAIL")
 
+# this should be consolidated with status_delete at some point but
+# HootenflatenBaseObject is not a db.Model so we can't query it.
+@hootenflaten_status.route("/_comment/_delete", methods=['GET'])
+@login_required
+def status_comment_delete():
+    id = request.args.get('id')
+    c = Comment.query.filter_by(id=id).first()
+    if c is not None:
+        if c.user == current_user:
+            c.active = False
+            db.session.add(c)
+            db.session.commit()
+            response = jsonify(status="SUCCESS")
+            return response
+        else:
+            return jsonify(status="NOTAUTHORIZED")
+    else:
+        return jsonify(status="FAIL")
+
+
 @hootenflaten_status.route("/_comment", methods=['GET'])
 @login_required
 def status_comment():

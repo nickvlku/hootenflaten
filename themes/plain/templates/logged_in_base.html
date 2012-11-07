@@ -73,6 +73,19 @@
                 }
             });
         };
+
+        hootenflaten.delete_comment = function(comment_id) {
+            $.getJSON('{{url_for('hootenflaten_status.status_comment_delete')}}',
+            {
+                id: comment_id
+            }, function(data) {
+                if (data.status == "SUCCESS") {
+                    $(".comment[comment_id='"+comment_id+"']").each(function() {
+                        $(this).hide('slow', function(){ $(this).remove(); });
+                    })
+                }
+            });
+        };
         hootenflaten.comment = function(comment_form_box) {
             var status_id = $(comment_form_box).attr("status_id");
             $.get("{{url_for('hootenflaten_status.status_comment')}}",

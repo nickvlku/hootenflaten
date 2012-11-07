@@ -1,5 +1,22 @@
+{% if comment.active %}
 <div class="comment" comment_id="{{ comment.id }}">
     <a href="/users/{{comment.user.id}}"><img src="{{comment.user.profile_image}}" height=36 width=36 class="comment_photo"></a> <a href="/users/{{comment.user.id}}">{{comment.user.full_name}}</a>
     {{comment.comment}}<br/>
-    <span class="date_{{comment.id}} date"><script type="text/javascript">$(".date_{{comment.id}}")[0].innerHTML = $.localtime.toLocalTime("{{comment.created_at}}Z", "hh:mm:ss tt MMMMM dd, yyyy");</script></span><span class="date"> | <a href="#" comment_id="{{comment.id}}" id="awesome_{{comment.id}}" class="light_blue">Awesome!</a></span>
+    <span class="date_{{comment.id}} date"><script type="text/javascript">$(".date_{{comment.id}}")[0].innerHTML = $.localtime.toLocalTime("{{comment.created_at}}Z", "hh:mm:ss tt MMMMM dd, yyyy");</script></span>
+    <span class="date"> | <a href="#" comment_id="{{comment.id}}" id="awesome_{{comment.id}}" class="light_blue">Awesome!</a> {% if comment.user == current_user %} &middot; <a href="#" id="delete_{{comment.id}}" comment_id="{{comment.id}}" class="light_blue">Delete</a> {% endif %}</span>
 </div>
+
+<script type="text/javascript">
+    $(function() {
+        $("#awesome_{{comment.id}}").click(function() {
+            hootenflaten.awesome_status($(this).attr("comment_id"));
+            return false;
+        })
+        $("#delete_{{comment.id}}").click(function() {
+            hootenflaten.delete_comment($(this).attr("comment_id"));
+            return false;
+        })
+
+    });
+</script>
+{% endif %}
