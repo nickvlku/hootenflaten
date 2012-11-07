@@ -38,6 +38,21 @@
     <script type='text/javascript'>
         $.localtime.setFormat("hh:mm:ss tt MMMMM dd, yyyy");
 
+        hootenflaten.post_status = function() {
+            $.get('{{url_for('hootenflaten_status.status_post')}}',
+            {
+                status: $('textarea[name="status_update_box"]').val()
+            }, function(data) {
+
+                $("#new_statuses").prepend(data);
+                $("#new_statuses > [added='true']").each(function(element) {
+                    $(this).fadeIn("slow");
+                });
+                $('textarea[name="status_update_box"]').val("");
+            });
+            return false;
+        }
+
         hootenflaten.awesome_status = function(status_id) {
             $.getJSON('{{url_for('hootenflaten_status.status_awesome')}}',
             {
@@ -292,18 +307,7 @@
 <script type="text/javascript">
         $(function() {
             $("#post_status").click(function() {
-                $.get('{{url_for('hootenflaten_status.status_post')}}',
-                {
-                    status: $('textarea[name="status_update_box"]').val()
-                }, function(data) {
-
-                    $("#new_statuses").prepend(data);
-                    $("#new_statuses > [added='true']").each(function(element) {
-                        $(this).fadeIn("slow");
-                    });
-                    $('textarea[name="status_update_box"]').val("");
-                });
-                return false;
+                hootenflaten.post_status();
             });
 
             $(".comment_link").click(function() {

@@ -8,7 +8,8 @@
             <div class="img_top"></div>
             <div class="text_status">
                 <textarea class="input_box" name="status_update_box" placeholder="What's up?"></textarea></div>
-            <button class="btn btn-primary" style="float:right; margin-top:5px;" id="post_status">Post</button><span style="float:right;" class="date"><input type="checkbox" > &crarr; &nbsp;&nbsp;&nbsp;</span>
+            <button class="btn btn-primary" style="float:right; margin-top:5px;" id="post_status">Post</button><span style="float:right;" class="date">
+            <input type="checkbox" id="post_on_enter"> &crarr; &nbsp;&nbsp;&nbsp;</span>
         </div>
     </div>
 
@@ -20,5 +21,13 @@
     {% endfor %}
 
 
-
+    <script type="text/javascript">
+        $(".input_box").keypress(function(e) {
+            if ($(post_on_enter).is(":checked")) {
+                if (e.which == 13) {
+                    hootenflaten.post_status();
+                }
+            }
+        })
+    </script>
 </div>
