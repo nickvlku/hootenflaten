@@ -1,3 +1,104 @@
+<script type="text/javascript">
+    hootenflaten.post_status = function() {
+        $.get('{{url_for('hootenflaten_status.status_post')}}',
+        {
+            status: $('textarea[name="status_update_box"]').val()
+        }, function(data) {
+
+            $("#new_statuses").prepend(data);
+            $("#new_statuses > [added='true']").each(function(element) {
+                $(this).fadeIn("slow");
+            });
+            $('textarea[name="status_update_box"]').val("");
+        });
+        return false;
+    }
+
+    hootenflaten.awesome_status = function(status_id) {
+        $.getJSON('{{url_for('hootenflaten_status.status_awesome')}}',
+        {
+            id: status_id
+        }, function(data) {
+            if (data.awesome_list.length > 0) {
+                var names = [];
+                $(data.awesome_list).each(function(user) {
+                    user_string = '<i><a href="/users/' + this.user_id + '">' + this.first_name + ' ' + this.last_name + '</a></i>';
+                    names.push(user_string)
+                });
+                $(".awesome_list[status_id='"+ data.id + "']").each(function() {
+                    this.innerHTML = names.join(",") + "  awesome'ed this<br/>";
+                })
+            }
+            else {
+                $(".awesome_list[status_id='"+ data.id + "']").each(function() {
+                    this.innerHTML = "";
+                });
+            }
+        });
+        return false;
+    };
+    hootenflaten.delete_status = function(status_id) {
+        $.getJSON('{{url_for('hootenflaten_status.status_delete')}}',
+        {
+            id: status_id
+        }, function(data) {
+            if (data.status == "SUCCESS") {
+                $(".load_status[status_id='"+status_id+"']").each(function() {
+                    $(this).hide('slow', function(){ $(this).remove(); });
+                })
+            }
+        });
+    };
+
+    hootenflaten.awesome_comment = function(comment_id) {
+        $.getJSON('{{url_for('hootenflaten_status.status_comment_awesome')}}',
+        {
+            id: comment_id
+        }, function(data) {
+            if (data.awesome_list.length > 0) {
+                var names = [];
+                $(data.awesome_list).each(function(user) {
+                    user_string = '<i><a href="/users/' + this.user_id + '">' + this.first_name + ' ' + this.last_name + '</a></i>';
+                    names.push(user_string)
+                });
+                $(".awesome_list[comment_id='"+ data.id + "']").each(function() {
+                    this.innerHTML = names.join(",") + "  awesome'ed this &middot;";
+                })
+            }
+            else {
+                $(".awesome_list[comment_id='"+ data.id + "']").each(function() {
+                    this.innerHTML = "";
+                });
+            }
+        });
+        return false;
+    };
+    hootenflaten.delete_comment = function(comment_id) {
+        $.getJSON('{{url_for('hootenflaten_status.status_comment_delete')}}',
+        {
+            id: comment_id
+        }, function(data) {
+            if (data.status == "SUCCESS") {
+                $(".comment[comment_id='"+comment_id+"']").each(function() {
+                    $(this).hide('slow', function(){ $(this).remove(); });
+                })
+            }
+        });
+    };
+    hootenflaten.comment = function(comment_form_box) {
+        var status_id = $(comment_form_box).attr("status_id");
+        $.get("{{url_for('hootenflaten_status.status_comment')}}",
+                {
+                    id: status_id,
+                    comment: $(comment_form_box).val()
+                }, function(data) {
+                    $(".comment_list[status_id='"+ status_id + "']").append(data);
+                    $(comment_form_box).val("")
+                });
+    }
+</script>
+
+
 <div class="status_module" id="hootenflaten_status">
     <div class="status_post" id="hootenflaten_status_post" >
         <div class="con">
@@ -21,13 +122,38 @@
     {% endfor %}
 
 
-    <script type="text/javascript">
-        $(".input_box").keypress(function(e) {
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        $("#post_status").click(function() {
+            hootenflaten.post_status();
+        });
+
+        $(document).on("click", ".comment_link", function() {
+            var status_id = $(this).attr("status_id");
+            $(".comment_form[status_id='"+ status_id +"']").parent(".status_comments").show();
+            $(".comment_form[status_id='"+ status_id +"']").show();
+            return false;
+        });
+
+        $(document).on("keypress", ".comment_box", function(e) {
+            if (e.which == 13) {
+                hootenflaten.comment(this);
+
+            }
+
+        });
+
+        $(document).on("keypress", ".input_box", function(e) {
             if ($(post_on_enter).is(":checked")) {
                 if (e.which == 13) {
                     hootenflaten.post_status();
                 }
             }
-        })
-    </script>
-</div>
+        });
+
+    });
+
+
+</script>
