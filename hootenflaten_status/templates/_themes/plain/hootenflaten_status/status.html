@@ -13,8 +13,8 @@
         </div>
 
         <span class="date_{{status.id}} date" date_id="{{status.id}}"><script type="text/javascript">$(".date_{{status.id}}")[0].innerHTML = $.localtime.toLocalTime("{{status.created_at}}Z", "hh:mm:ss tt MMMMM dd, yyyy");</script></span>
-        <span class="date"> | <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue">Awesome!</a> &middot; <a href="#" status_id="{{status.id}}" class="light_blue comment_link">Comment</a>
-                            {% if status.user == current_user %} &middot; <a href="#" id="delete_{{status.id}}" status_id="{{status.id}}" class="light_blue">Delete</a> {% endif %}</span>
+        <span class="date"> | <a href="#" status_id="{{status.id}}" id="awesome_{{status.id}}" class="light_blue awesome_link">Awesome!</a> &middot; <a href="#" status_id="{{status.id}}" class="light_blue comment_link">Comment</a>
+                            {% if status.user == current_user %} &middot; <a href="#" id="delete_{{status.id}}" status_id="{{status.id}}" class="light_blue delete_link">Delete</a> {% endif %}</span>
 
         <div class="status_comments" {% if not status.comments %} style="display:none;" {% endif %}>
             <div class="comment_list" status_id="{{status.id}}">
@@ -34,16 +34,3 @@
     </div>
     <div class="clear"></div>
 </div>
-<script type="text/javascript">
-    $(function() {
-        $("#awesome_{{status.id}}").click(function() {
-            hootenflaten.awesome_status($(this).attr("status_id"));
-            return false;
-        })
-        $("#delete_{{status.id}}").click(function() {
-            hootenflaten.delete_status($(this).attr("status_id"));
-            return false;
-        })
-
-    });
-</script>

@@ -153,6 +153,28 @@
             }
         });
 
+        $(document).on("click", ".awesome_link", function() {
+            hootenflaten.awesome_status($(this).attr("status_id"));
+            return false;
+        });
+
+        $(document).on("click", ".delete_link", function() {
+            hootenflaten.delete_status($(this).attr("status_id"));
+            return false;
+        });
+
+        $(document).on("click", ".comment_awesome_link", function() {
+            hootenflaten.awesome_comment($(this).attr("comment_id"));
+            return false;
+        });
+
+        $(document).on("click", ".comment_delete_link", function() {
+            hootenflaten.delete_comment($(this).attr("comment_id"));
+            return false;
+        });
+
+
+
     });
 
 

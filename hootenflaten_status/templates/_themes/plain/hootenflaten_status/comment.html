@@ -12,20 +12,7 @@
                                 {%- endif -%}</span>
     </span>
     <span class="date_{{comment.id}} date" style="font-size:.7em"><script type="text/javascript">$(".date_{{comment.id}}")[0].innerHTML = $.localtime.toLocalTime("{{comment.created_at}}Z", "hh:mm:ss tt MMMMM dd, yyyy");</script></span>
-    <span class="date" style="font-size:.7em"> | <a href="#" comment_id="{{comment.id}}" id="awesome_{{comment.id}}" class="light_blue">Awesome!</a> {% if comment.user == current_user %} &middot; <a href="#" id="delete_{{comment.id}}" comment_id="{{comment.id}}" class="light_blue">Delete</a> {% endif %}</span>
+    <span class="date" style="font-size:.7em"> | <a href="#" comment_id="{{comment.id}}" id="awesome_{{comment.id}}" class="comment_awesome_link light_blue">Awesome!</a> {% if comment.user == current_user %} &middot; <a href="#" id="delete_{{comment.id}}" comment_id="{{comment.id}}" class="light_blue comment_delete_link">Delete</a> {% endif %}</span>
 </div>
 
-<script type="text/javascript">
-    $(function() {
-        $("#awesome_{{comment.id}}").click(function() {
-            hootenflaten.awesome_comment($(this).attr("comment_id"));
-            return false;
-        })
-        $("#delete_{{comment.id}}").click(function() {
-            hootenflaten.delete_comment($(this).attr("comment_id"));
-            return false;
-        })
-
-    });
-</script>
 {% endif %}
