@@ -1,7 +1,7 @@
 {% if comment.active %}
 <div class="comment" comment_id="{{ comment.id }}">
     <a href="/users/{{comment.user.id}}"><img src="{{comment.user.profile_image}}" height=36 width=36 class="comment_photo"></a> <a href="/users/{{comment.user.id}}">{{comment.user.full_name}}</a>
-    {{comment.comment}}<br/>
+    <span class="luv_whitespace">{{comment.comment}}</span><br/>
     <span class="date" style="font-size:.7em">
                                 <span class="awesome_list" comment_id="{{comment.id}}">
                                 {%- if comment.awesome_list -%}

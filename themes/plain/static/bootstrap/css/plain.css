@@ -23,6 +23,9 @@
     overflow:hidden;
 }
 
+.luv_whitespace {
+    white-space:pre-wrap;
+}
 .clear{
     clear:both;
 }
