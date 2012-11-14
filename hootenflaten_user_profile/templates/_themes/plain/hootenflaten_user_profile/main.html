@@ -1,0 +1,32 @@
+{% extends theme('base.html', false) %}
+{% from theme('macros.html', false) import input %})
+{% block page_title %} - {{profile_user.first_name}} {{profile_user.last_name}}{% endblock %}
+
+{% block main_content %}
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="well well-small">
+                <div class="row-fluid">
+                    <div class="span1">
+
+                    </div>
+                    <div class="span2">
+                        <img src="{{profile_user.profile_image}}"/>
+                    </div>
+                    <div class="span7 offset2">
+                        <h2 class="media-heading">{{profile_user.first_name}} {{profile_user.last_name}}</h2>
+                        <span class="muted">From:</span> New York City<br/>
+                        <span class="muted">Joined on:</span> June 12, 2012<br/>
+                        <span class="muted">Works at:</span> CEO and Founder of Hootenflaten<br/>
+
+                        {% if profile_user == current_user %}<br/>Edit my profile{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

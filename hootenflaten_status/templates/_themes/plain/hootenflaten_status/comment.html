@@ -1,12 +1,13 @@
 {% if comment.active %}
 <div class="comment" comment_id="{{ comment.id }}">
-    <a href="/users/{{comment.user.id}}"><img src="{{comment.user.profile_image}}" height=36 width=36 class="comment_photo"></a> <a href="/users/{{comment.user.id}}">{{comment.user.full_name}}</a>
+    <a href="{{ url_for('hootenflaten_user_profile.user_profile', user_id=comment.user.id) }}"><img src="{{comment.user.profile_image}}" height=36 width=36 class="comment_photo"></a>
+    <a href="{{ url_for('hootenflaten_user_profile.user_profile', user_id=comment.user.id) }}">{{comment.user.full_name}}</a>
     <span class="luv_whitespace">{{comment.comment}}</span><br/>
     <span class="date" style="font-size:.7em">
                                 <span class="awesome_list" comment_id="{{comment.id}}">
                                 {%- if comment.awesome_list -%}
                                     {%- for user in comment.awesome_list -%}
-                                        <i><a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a></i> {% if not loop.last %}, {% endif %}
+                                        <i><a href="{{ url_for('hootenflaten_user_profile.user_profile', user_id=user.id) }}">{{user.first_name}} {{user.last_name}}</a></i> {% if not loop.last %}, {% endif %}
                                     {%- endfor -%}
                                     awesome'ed this &middot;
                                 {%- endif -%}</span>
