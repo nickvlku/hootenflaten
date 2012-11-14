@@ -1,7 +1,17 @@
 __author__ = 'nick'
 
+from sqlalchemy import Column, DateTime, Integer, String
+
 import sqlalchemy.types as types
 import json
+
+class SecurityTrackable():
+    last_login_at = Column(DateTime)
+    current_login_at = Column(DateTime)
+    last_login_ip = Column(DateTime)
+    current_login_ip = Column(String(255))
+    login_count = Column(Integer)
+
 
 class ChoiceType(types.TypeDecorator):
 

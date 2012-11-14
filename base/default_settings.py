@@ -2,7 +2,11 @@ class Config(object):
     DEBUG = True
     SECRET_KEY = 'SECRET-THIS-SHOULD-BE-CHANGED'
     SQLALCHEMY_DATABASE_URI  = 'mysql://root@127.0.0.1/hootenflaten'
-    SECURITY_PASSWORD_HASH = 'bcrypt'
+
+    SECURITY_PASSWORD_HASH = "sha512_crypt"
+    SECURITY_PASSWORD_SALT = "SECRET_SALT"
+
+    SECURITY_TRACKABLE = True
 
     SHORT_NAME = 'Hooten'
     FULL_NAME = 'HootenFlaten: Social in a Box'
@@ -37,6 +41,5 @@ class Config(object):
             'rsvp_event',
     ]
 
-    EXTENSIONS = list(['hootenflaten_auth', 'hootenflaten_status'])
+    EXTENSIONS = list(['hootenflaten_auth', 'hootenflaten_status', 'hootenflaten_user_profile'])
     EXTENSIONS.append('facebook_auth')
-

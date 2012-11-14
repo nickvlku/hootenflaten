@@ -30,15 +30,15 @@
             {% endif %}
             {% endwith %}
 
-        <div class="row-fluid">
+            <div class="row-fluid">
                 <div class="span12" id="example-1" >
                     <div class="span8 well">
-                        <form action="{{ url_for('auth.authenticate') }}" method="POST"  class="form-horizontal">
+                        <form action="{{ url_for('.login') }}" method="POST"  class="form-horizontal">
                             <legend>{{config.SHORT_NAME}} Login</legend>
-                            {{input (form.username, errors=form.errors) }}
-                            {{input (form.password, errors=form.errors) }}
-                            {{input (form.remember, errors=form.errors) }}
-                            {{form.hidden_tag()}}
+                            {{input (login_user_form.email, errors=login_user_form.errors) }}
+                            {{input (login_user_form.password, errors=login_user_form.errors) }}
+                            {{input (login_user_form.remember, errors=login_user_form.errors) }}
+                            {{login_user_form.hidden_tag()}}
                             <button type="submit" id="SaveAccount" name="process" class="btn btn-primary submit pull-right">Login</button>
                         </form>
                     </div>

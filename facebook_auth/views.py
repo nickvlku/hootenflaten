@@ -2,14 +2,16 @@ import json
 import urllib
 import urlparse
 import datetime
+from flask.ext.security.registerable import register_user
 import requests
 
 from base import db
+from base import user_datastore
+
 from site_configuration.themes import render
 
 from flask import request, g, session, abort, current_app, url_for, redirect, flash
 from flask.ext.login import login_user, current_user
-from flask.ext.security import user_datastore
 from flask_login import login_required
 
 from facebook_auth import fb_auth
@@ -38,11 +40,12 @@ def register_facebook_account_post():
     registration_form.validate()
     pw = registration_form.password.data
 
-    u = user_datastore.create_user(
-        username=registration_form.email.data,
-        email=registration_form.email.data,
-        password=registration_form.password.data,
-        active=True)
+    user_dict = {
+        "email": registration_form.email.data,
+        "password":  registration_form.password.data
+
+    }
+    u = register_user(**user_dict)
 
     u.created_at=datetime.datetime.utcnow()
     u.modified_at=datetime.datetime.utcnow()

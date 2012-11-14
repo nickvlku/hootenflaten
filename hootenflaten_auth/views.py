@@ -1,17 +1,28 @@
 import datetime
+from flask.ext.security.decorators import anonymous_user_required
+from flask.ext.security.registerable import register_user
+from flask.ext.security.utils import encrypt_password, get_post_login_redirect
+from flask.ext.security.views import _ctx, _render_json
 from flask_login import current_user
 from flask_security import LoginForm
+from werkzeug.datastructures import MultiDict
+from werkzeug.local import LocalProxy
 
 from base import db
+from base import user_datastore, User
 
-from flask import redirect, g, url_for, request, flash
+from flask import redirect, g, url_for, request, flash, current_app, after_this_request
 from flask.ext.login import login_user
-from flask.ext.security import user_datastore, User
 
 from site_configuration.themes import render
 
 from hootenflaten_auth import hootenflaten_auth
 from hootenflaten_auth.forms import RegistrationForm
+
+_security = LocalProxy(lambda: current_app.extensions['security'])
+
+_datastore = LocalProxy(lambda: _security.datastore)
+
 
 @hootenflaten_auth.route("/register", methods=['GET'])
 def register():
@@ -27,11 +38,12 @@ def register_post():
 
     form = RegistrationForm(request.form)
     if form.validate():
-        u = user_datastore.create_user(
-            username=form.email.data,
-            email=form.email.data,
-            password=form.password.data,
-            active=True)
+        user_dict = {
+            "email": form.email.data,
+            "password":  form.password.data
+
+        }
+        u = register_user(**user_dict)
 
         u.created_at=datetime.datetime.utcnow()
         u.modified_at=datetime.datetime.utcnow()
@@ -67,12 +79,28 @@ def username_valid():
     else:
         return "false"
 
-@hootenflaten_auth.route("/login")
+def _commit(response=None):
+    _datastore.commit()
+    return response
+
+
+@anonymous_user_required
+@hootenflaten_auth.route("/login", methods=['GET', 'POST'])
 def login():
-
-    if current_user.is_authenticated():
-        return redirect(url_for('front_page'))
+    """View function for login view"""
 
 
-    l = LoginForm()
-    return render('login.html', form=LoginForm())
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        login_user(form.user, remember=form.remember.data)
+        after_this_request(_commit)
+
+        if not request.json:
+            return redirect(get_post_login_redirect())
+
+
+    return render('login.html',
+        login_user_form=form)
+
+

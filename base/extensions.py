@@ -15,12 +15,13 @@ def register(e):
         ext.configured = not needs_config
         ext.version = e.__meta__.get('Version', '0.0')
         if ext.configured:
-            app.logger.info("First run of %s.  Needs configuration."  % e.__meta__.get('Title'))
+            if needs_config:
+                app.logger.warn("First run of %s.  Needs configuration."  % e.__meta__.get('Title'))
         db.session.add(ext)
         db.session.commit()
     else:
         if not ext.configured:
-            app.logger.info("%s needs configuration."  % e.__meta__.get('Title'))
+            app.logger.warn("%s needs configuration."  % e.__meta__.get('Title'))
 
 def init_extensions(app):
     for extension in app.config['EXTENSIONS']:
