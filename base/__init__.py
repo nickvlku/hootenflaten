@@ -14,6 +14,8 @@ from sqlalchemy.sql.expression import case
 from base.custom_sql_fields import JSONEncodedDict, SecurityTrackable
 from base.extensions import init_extensions
 
+from Configurator import Configurator
+
 
 app = Flask(__name__)
 app.config.from_object('base.default_settings.Config')
@@ -25,6 +27,7 @@ except RuntimeError:
 db = SQLAlchemy(app)
 FlaskMustache(app)
 mail = Mail(app)
+
 
 roles_users = db.Table('roles_users',
     db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
@@ -73,11 +76,6 @@ class User(db.Model, UserMixin, SecurityTrackable):
         ], else_ = cls.last_name)
 
 
-user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-
-security = Security(app, user_datastore)
-
-init_extensions(app)
 
 def instance_loader(app):
     base_app_path = os.path.split(app.root_path)[0]
@@ -87,6 +85,13 @@ def instance_loader(app):
         return load_themes_from(themes_dir)
     else:
         return ()
+
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+security = Security(app, user_datastore)
+
+init_extensions(app)
+
+configurator = Configurator(app)
 
 
 setup_themes(app, app_identifier="hootenflaten", loaders=[instance_loader, packaged_themes_loader, theme_paths_loader])
