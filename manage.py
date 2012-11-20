@@ -6,13 +6,14 @@ from base.application import create_app
 from base.extensions import HootenflatenExtensionManager
 from base.flask_extensions import db
 
-manager = Manager(create_app)
+app = create_app()
+manager = Manager(app)
 
 @manager.command
 def createall():
     "Creates database tables"
     db.create_all()
-    HootenflatenExtensionManager(manager.app())
+    HootenflatenExtensionManager(app)
 
 @manager.command
 def dropall():
@@ -23,6 +24,6 @@ def dropall():
 
 
 if __name__ == "__main__":
-    HootenflatenExtensionManager(manager.app())
+    HootenflatenExtensionManager(app)
     manager.run()
 
