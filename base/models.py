@@ -2,13 +2,9 @@ import datetime
 import uuid
 import hashlib
 import json
-
-from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table, Text, Float
-from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.types import Boolean
 
-from base import db
+from base.flask_extensions import db
 from base.custom_sql_fields import ChoiceType, JSONEncodedDict
 
 from flask import current_app
@@ -33,18 +29,18 @@ class HootenflattenBaseObject(object):
 
 # TODO: Need to abstract this out to an IsAwesomeableMixin
 comment_user_awesome_table = db.Table('comment_user_awesomes',
-    db.Column('user_id', Integer, ForeignKey('user.id')),
-    db.Column('comment_id', String(45), ForeignKey('comment.id')))
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('comment_id', db.String(45), db.ForeignKey('comment.id')))
 
 class Comment(HootenflattenBaseObject, db.Model):
     __tablename__ = "comment"
     
     comment = db.Column(db.Text)
-    user_id = db.Column(db.Integer, ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     awesome_list = db.relationship("User", secondary=comment_user_awesome_table, backref=db.backref('awesomed_comments', lazy='dynamic'))
 
-    user = relationship("User")
+    user = db.relationship("User")
 
     def __repr__(self):
         return "<Comment: %r - %r>" % (self.comment, self.user_id)
@@ -84,35 +80,35 @@ class IsCommentableMixin(object):
 
     @declared_attr
     def comments(cls):
-        comment_association = Table(
+        comment_association = db.Table(
             "%s_comments" % cls.__tablename__,
             cls.metadata,
-            Column("comment_id", ForeignKey("comment.id"), primary_key=True),
-            Column("%s_id" % cls.__tablename__, ForeignKey("%s.id" % cls.__tablename__),
+            db.Column("comment_id", db.ForeignKey("comment.id"), primary_key=True),
+            db.Column("%s_id" % cls.__tablename__, db.ForeignKey("%s.id" % cls.__tablename__),
             primary_key=True)
         )
-        return relationship(Comment, order_by="Comment.created_at", secondary=comment_association, backref="%s_parents" % cls.__name__.lower())
+        return db.relationship(Comment, order_by="Comment.created_at", secondary=comment_association, backref="%s_parents" % cls.__name__.lower())
 
 class Extension(db.Model):
     __tablename__ = 'extensions'
 
-    id = Column(Integer, primary_key=True)
-    extension_name = Column(String(200))
-    configured = Column(Boolean)
-    version = Column(Float)
+    id = db.Column(db.Integer, primary_key=True)
+    extension_name = db.Column(db.String(200))
+    configured = db.Column(db.Boolean)
+    version = db.Column(db.Float)
 
     def __repr__(self):
         return "<Extension: %r - Configured: %r>" % (self.extension_name, self.configured)
 
 class CustomQuestion(db.Model):
     __tablename__ = 'custom_questions'
-    id = Column(Integer, primary_key=True)
-    position = Column(Integer)
-    name = Column(String(50))
-    question = Column(Text)
-    validators = Column(JSONEncodedDict(255))  # ex: ['Required', 'Email']
-    choices = Column(JSONEncodedDict(255)) # ex: [(1,'Hello'),(2,'GoodBye')]
-    widget = Column(ChoiceType((
+    id = db.Column(db.Integer, primary_key=True)
+    position = db.Column(db.Integer)
+    name = db.Column(db.String(50))
+    question = db.Column(db.Text)
+    validators = db.Column(JSONEncodedDict(255))  # ex: ['Required', 'Email']
+    choices = db.Column(JSONEncodedDict(255)) # ex: [(1,'Hello'),(2,'GoodBye')]
+    widget = db.Column(ChoiceType((
                          ("TextField","TextField"),
                          ("TextAreaField", "TextAreaField"),
                          ("BooleanField", "BooleanField"),
@@ -129,5 +125,3 @@ class CustomQuestion(db.Model):
     def __repr__(self):
         return "<Custom Question: %r: %r>" % (self.name, self.question)
 
-
-db.create_all()

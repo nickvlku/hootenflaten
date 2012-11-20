@@ -8,16 +8,17 @@ from flask_security import LoginForm
 from werkzeug.datastructures import MultiDict
 from werkzeug.local import LocalProxy
 
-from base import db
-from base import user_datastore, User
+from base.flask_extensions import  db
 
-from flask import redirect, g, url_for, request, flash, current_app, after_this_request
+from hootenflaten_auth.models import User
+
+from flask import redirect, g, url_for, request, flash, current_app, after_this_request, Blueprint
 from flask.ext.login import login_user
 
 from site_configuration.themes import render
 
-from hootenflaten_auth import hootenflaten_auth
-from hootenflaten_auth.forms import RegistrationForm
+hootenflaten_auth = Blueprint('hootenflaten_auth', __name__, template_folder='templates')
+
 
 _security = LocalProxy(lambda: current_app.extensions['security'])
 
@@ -28,6 +29,8 @@ _datastore = LocalProxy(lambda: _security.datastore)
 def register():
     if current_user.is_authenticated():
         return redirect(url_for('front_page'))
+    from hootenflaten_auth.forms import RegistrationForm
+
     return render('register.html', form=RegistrationForm())
 
 @hootenflaten_auth.route("/register", methods=['POST'])
@@ -35,6 +38,8 @@ def register_post():
 
     if current_user.is_authenticated():
         return redirect(url_for('front_page'))
+
+    from hootenflaten_auth.forms import RegistrationForm
 
     form = RegistrationForm(request.form)
     if form.validate():
@@ -85,7 +90,7 @@ def _commit(response=None):
 
 
 @anonymous_user_required
-@hootenflaten_auth.route("/login", methods=['GET', 'POST'])
+@hootenflaten_auth.route("/login", methods=['GET', 'POST'], endpoint="login")
 def login():
     """View function for login view"""
 

@@ -15,9 +15,4 @@ __meta__ = {
 from flask.blueprints import Blueprint
 
 
-hootenflaten_auth = Blueprint('hootenflaten_auth', __name__, template_folder='templates')
-
-from hootenflaten_auth import views
-from hootenflaten_auth import models
-
-
+from .views import hootenflaten_auth

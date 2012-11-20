@@ -1,10 +1,10 @@
-from base import app
+from flask import current_app
 
 import time
 
 __author__ = 'nick'
 
-@app.template_filter('epoch')
+@current_app.template_filter('epoch')
 def epoch_time(d):
     return int(time.mktime(d.timetuple()))
 

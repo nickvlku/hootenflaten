@@ -17,7 +17,3 @@ from flask.blueprints import Blueprint
 
 hootenflaten_status = Blueprint('hootenflaten_status', __name__, template_folder='templates')
 
-from hootenflaten_status import views
-from hootenflaten_status import models
-
-

@@ -1,8 +1,6 @@
-from flask.ext.sqlalchemy import SQLAlchemy
+from base.flask_extensions import db
 
-db = SQLAlchemy()
-
-class ConfigurationSetting(db.Model):
+class ConfigurationDatabaseSetting(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     extension = db.Column(db.String(255))
     key_name = db.Column(db.String(255))

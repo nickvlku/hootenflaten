@@ -3,7 +3,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import case
 
-from base import db
+from base.flask_extensions import db
 from base.models import HootenflattenBaseObject
 
 

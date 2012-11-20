@@ -1,15 +1,17 @@
 from flask.helpers import jsonify
-from base import db
+
 
 from flask.globals import request
 from flask_login import login_required, current_user
+
+from base.flask_extensions import db
 from base.models import Comment
 
 from hootenflaten_status import hootenflaten_status
 from hootenflaten_status.models import StatusUpdate
+
 from site_configuration.themes import render
 
-import uuid
 
 @hootenflaten_status.route("/_post", methods=['GET'])
 @login_required

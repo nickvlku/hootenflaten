@@ -5,8 +5,7 @@ import datetime
 from flask.ext.security.registerable import register_user
 import requests
 
-from base import db
-from base import user_datastore
+from base.flask_extensions import db
 
 from site_configuration.themes import render
 

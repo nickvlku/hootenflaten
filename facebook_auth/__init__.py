@@ -16,10 +16,5 @@ __meta__ = {
 
 from flask.blueprints import Blueprint
 
-
 fb_auth = Blueprint('fb_auth', __name__, template_folder='templates')
-
-from facebook_auth import views
-from facebook_auth import models
-
 

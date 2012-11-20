@@ -1,5 +1,5 @@
 from flask.ext.login import login_required, current_user
-from base import User
+from hootenflaten_auth.models import User
 from hootenflaten_user_profile import hootenflaten_user_profile
 from site_configuration.themes import render
 
