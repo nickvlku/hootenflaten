@@ -29,7 +29,7 @@ class HootenflatenExtensionManager(object):
 
 
 
-                from base.flask_extensions import db
+                from base.database import db
 
                 db.session.add(ext)
                 db.session.commit()
