@@ -8,7 +8,7 @@ from flask_security import LoginForm
 from werkzeug.datastructures import MultiDict
 from werkzeug.local import LocalProxy
 
-from base.flask_extensions import  db
+from base.database import db
 
 from hootenflaten_auth.models import User
 

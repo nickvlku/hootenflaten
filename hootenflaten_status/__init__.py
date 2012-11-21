@@ -12,8 +12,7 @@ __meta__ = {
     'NeedsConfiguration' : False
 }
 
-from flask.blueprints import Blueprint
+from .views import hootenflaten_status
 
 
-hootenflaten_status = Blueprint('hootenflaten_status', __name__, template_folder='templates')
 

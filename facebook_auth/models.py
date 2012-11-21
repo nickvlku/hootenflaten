@@ -3,7 +3,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import case
 
-from base.flask_extensions import db
+from base.database import db
 from base.models import HootenflattenBaseObject
 
 
@@ -46,4 +46,3 @@ class FacebookUser(HootenflattenBaseObject, db.Model):
         self.user_name = user_name
         self.email = email
 
-db.create_all()

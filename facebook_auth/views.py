@@ -5,17 +5,18 @@ import datetime
 from flask.ext.security.registerable import register_user
 import requests
 
-from base.flask_extensions import db
+from base.database import db
 
 from site_configuration.themes import render
 
-from flask import request, g, session, abort, current_app, url_for, redirect, flash
+from flask import request, g, session, abort, current_app, url_for, redirect, flash, Blueprint
 from flask.ext.login import login_user, current_user
 from flask_login import login_required
 
-from facebook_auth import fb_auth
 from facebook_auth.models import FacebookUser
 from hootenflaten_auth.forms import RegistrationForm
+
+fb_auth = Blueprint('fb_auth', __name__, template_folder='templates')
 
 @fb_auth.route('/register', methods=['GET'])
 def register_facebook_account():
@@ -70,7 +71,7 @@ def register_facebook_account_post():
         login_user(auth.user, force=True)
         flash('You were successfully logged in')
 
-    return redirect(url_for('front_page'))
+    return redirect(url_for('root_views.front_page'))
 
 @fb_auth.route('/complete', methods=['GET'])
 def bounceback_get():
@@ -119,7 +120,7 @@ def bounceback_get():
             login_user(auth.user, force=True)
             flash('You were successfully logged in')
 
-            return redirect(url_for('front_page'))
+            return redirect(url_for('root_views.front_page'))
 
 
         session['fb_auth'] = auth.id

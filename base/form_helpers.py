@@ -3,9 +3,7 @@ from wtforms.validators import ValidationError
 
 from base.models import CustomQuestion
 
-from flask.ext.wtf import Form, TextField, Required, Email
-from flask.ext.wtf.html5 import EmailField
-from wtforms.fields.simple import PasswordField
+from flask.ext.wtf import Form, Required
 
 __author__ = 'nick'
 

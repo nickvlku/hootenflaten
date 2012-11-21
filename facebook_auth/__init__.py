@@ -14,7 +14,6 @@ __meta__ = {
     'DependsOn': [ 'hootenflaten_auth', ]
 }
 
-from flask.blueprints import Blueprint
+from .views import fb_auth
 
-fb_auth = Blueprint('fb_auth', __name__, template_folder='templates')
 

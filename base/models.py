@@ -4,7 +4,7 @@ import hashlib
 import json
 from sqlalchemy.ext.declarative import declared_attr
 
-from base.flask_extensions import db
+from base.database import db
 from base.custom_sql_fields import ChoiceType, JSONEncodedDict
 
 from flask import current_app

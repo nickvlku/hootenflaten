@@ -3,8 +3,7 @@ from flask import current_app
 from flask.ext.script import Manager, prompt, prompt_pass,\
     prompt_bool, prompt_choices
 from base.application import create_app
-from base.extensions import HootenflatenExtensionManager
-from base.flask_extensions import db
+from base.database import db
 
 app = create_app()
 manager = Manager(app)
@@ -13,7 +12,6 @@ manager = Manager(app)
 def createall():
     "Creates database tables"
     db.create_all()
-    HootenflatenExtensionManager(app)
 
 @manager.command
 def dropall():
@@ -24,6 +22,7 @@ def dropall():
 
 
 if __name__ == "__main__":
+    from base.extensions import HootenflatenExtensionManager
     HootenflatenExtensionManager(app)
     manager.run()
 

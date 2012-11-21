@@ -5,13 +5,14 @@ from flask.ext.themes import load_themes_from, setup_themes, packaged_themes_loa
 from flask.ext.security import SQLAlchemyUserDatastore
 
 import os
+from base.database import init_db
 
-from base.flask_extensions import db, mustache, mail, configurator, security
-from base.views import root_views
-from hootenflaten_auth.models import User, Role
 
 def create_app():
     app = Flask("hootenflaten")
+    init_db(app)  # we first init the db
+
+
     configure_app(app)
     configure_flask_extensions(app)
     configure_theme_manager(app)
@@ -33,7 +34,7 @@ def configure_app(app):
 
 
 def configure_flask_extensions(app):
-    db.init_app(app)
+    from base.flask_extensions import mustache, mail, configurator
     mustache.init_app(app)
     mail.init_app(app)
     configurator.init_app(app)
@@ -53,6 +54,10 @@ def configure_theme_manager(app):
         loaders=[instance_loader, packaged_themes_loader, theme_paths_loader])
 
 def configure_security(app):
+    from base.database import db
+    from base.flask_extensions import security
+    from hootenflaten_auth.models import User, Role
+
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
     security.init_app(app, user_datastore)
 
@@ -124,4 +129,5 @@ def configure_logging(app):
     app.logger.addHandler(error_file_handler)
 
 def configure_root(app):
+    from base.views import root_views
     app.register_blueprint(root_views)

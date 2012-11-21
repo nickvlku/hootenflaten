@@ -1,6 +1,6 @@
 from sqlalchemy import case
 from sqlalchemy.ext.hybrid import hybrid_property
-from base.flask_extensions import db
+from base.database import db
 from flask.ext.security import UserMixin, RoleMixin
 
 from base.custom_sql_fields import JSONEncodedDict

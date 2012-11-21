@@ -1,17 +1,18 @@
+from flask import Blueprint
 from flask.helpers import jsonify
 
 
 from flask.globals import request
 from flask_login import login_required, current_user
 
-from base.flask_extensions import db
+from base.database import db
 from base.models import Comment
 
-from hootenflaten_status import hootenflaten_status
 from hootenflaten_status.models import StatusUpdate
 
 from site_configuration.themes import render
 
+hootenflaten_status = Blueprint('hootenflaten_status', __name__, template_folder='templates')
 
 @hootenflaten_status.route("/_post", methods=['GET'])
 @login_required

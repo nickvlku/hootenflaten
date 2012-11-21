@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import String
 
-from base.flask_extensions import db
+from base.database import db
 from base.custom_sql_fields import ChoiceType, JSONEncodedDict
 from base.models import HootenflattenBaseObject,IsCommentableMixin
 

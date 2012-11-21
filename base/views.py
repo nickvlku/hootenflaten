@@ -5,10 +5,10 @@ from site_configuration.themes import render
 
 root_views = Blueprint('root_views', __name__)
 
-@root_views.route("/")
+@root_views.route("/", )
 def front_page():
     if current_user.is_authenticated():
-        return redirect(url_for('main'))
+        return redirect(url_for('.main'))
     return render('base.html')
 
 @root_views.route('/main')

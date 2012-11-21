@@ -1,6 +1,5 @@
 __author__ = 'nick'
 
-from sqlalchemy import Column, DateTime, Integer, String
 
 import sqlalchemy.types as types
 import json
