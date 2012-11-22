@@ -28,7 +28,7 @@ _datastore = LocalProxy(lambda: _security.datastore)
 @hootenflaten_auth.route("/register", methods=['GET'])
 def register():
     if current_user.is_authenticated():
-        return redirect(url_for('front_page'))
+        return redirect(url_for('root_views.front_page'))
     from hootenflaten_auth.forms import RegistrationForm
 
     return render('register.html', form=RegistrationForm())
@@ -37,7 +37,7 @@ def register():
 def register_post():
 
     if current_user.is_authenticated():
-        return redirect(url_for('front_page'))
+        return redirect(url_for('root_views.front_page'))
 
     from hootenflaten_auth.forms import RegistrationForm
 
@@ -67,7 +67,7 @@ def register_post():
         login_user(u, force=True)
         flash('You were successfully logged in')
 
-        return redirect(url_for('front_page'))
+        return redirect(url_for('root_views.front_page'))
 
     else:
         return render('register.html', form=form)
