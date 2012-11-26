@@ -94,11 +94,13 @@ class Extension(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     extension_name = db.Column(db.String(200))
-    configured = db.Column(db.Boolean)
+    has_configuration = db.Column(db.Boolean)
+    needs_configuration = db.Column(db.Boolean)
+    has_configuration = db.Column(db.Boolean)
     version = db.Column(db.Float)
 
     def __repr__(self):
-        return "<Extension: %r - Configured: %r>" % (self.extension_name, self.configured)
+        return "<Extension: %r>" % (self.extension_name, )
 
 class CustomQuestion(db.Model):
     __tablename__ = 'custom_questions'

@@ -6,12 +6,24 @@ class HootenflatenExtensionManager(object):
     def __init__(self, app=None):
         self.app = app
         self.EXTENSIONS = {}
+        self.EXTENSIONS_NEED_CONFIG = {}
+
         if app is not None:
             self.init_app(app)
+
+    def context_processor(self):
+        return dict(ExtensionManager=self)
 
     def init_app(self, app):
         self.app = app
         self.init_extensions()
+        self.app.context_processor(self.context_processor)
+
+    def get_extensions(self, name):
+        return self.EXTENSIONS
+
+    def get_extensions_needing_config(self):
+        return self.EXTENSIONS_NEED_CONFIG
 
     def register(self,e):
         with self.app.app_context():
@@ -21,21 +33,20 @@ class HootenflatenExtensionManager(object):
                 ext = Extension()
                 ext.extension_name = e.__meta__['BlueprintName']
                 needs_config = e.__meta__.get('NeedsConfiguration', False)
-                ext.configured = not needs_config
+                ext.needs_configuration = needs_config
                 ext.version = e.__meta__.get('Version', '0.0')
-                if ext.configured:
-                    if needs_config:
-                        self.app.logger.warn("First run of %s.  Needs configuration."  % e.__meta__.get('Title'))
-
+                ext.has_configuration = False
 
 
                 from base.database import db
 
                 db.session.add(ext)
                 db.session.commit()
-            else:
-                if not ext.configured:
-                    self.app.logger.warn("%s needs configuration."  % e.__meta__.get('Title'))
+
+            ext.package = e
+            if ext.needs_configuration and not ext.has_configuration:
+                self.app.logger.warn("%s needs configuration."  % e.__meta__.get('Title'))
+                self.EXTENSIONS_NEED_CONFIG[ext.extension_name] = ext
 
             # let's import the models now so we can create them if they are there
             try:

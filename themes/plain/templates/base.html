@@ -11,6 +11,7 @@
 
 {% block css_head %}
 <link href="{{ theme_static('bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+
 <link href="{{ theme_static('bootstrap/css/custom-theme/jquery-ui-1.8.16.custom.css') }}" rel="stylesheet">
     <style type="text/css">
     body {
@@ -26,6 +27,14 @@
 <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="{{ theme_static('bootstrap/js/bootstrap.min.js') }}"/></script>
+    <script src="{{ theme_static('bootstrap/js/bootstrap-button.js') }}"/></script>
+    <script src="{{ theme_static('bootstrap/js/bootstrap-dropdown.js') }}"/></script>
+    <script src="{{ theme_static('bootstrap/js/bootstrap-alert.js') }}"/></script>
+    <script src="{{ theme_static('bootstrap/js/bootstrap-modal.js') }}"/></script>
+
 {% endblock %}
 
 {% endblock %}
@@ -101,6 +110,30 @@
     {% endblock %}
 
     {% block main_content %}
+
+    {% if ExtensionManager.get_extensions_needing_config() %}
+        <div class="modal fade" id="configurator_extensions">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>Extensions need Configuration</h3>
+            </div>
+            <div class="modal-body">
+                <p>A few of the extensions you have installed need configuration to work properly.  They are:</p>
+                <ul>
+                    {%  for ext in ExtensionManager.get_extensions_needing_config().values() %}
+                    <li> {{ ext.package.__meta__.Title }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn" data-dismiss="modal">Ignore</a>
+                <a href="#" class="btn btn-primary">Configure</a>
+            </div>
+        </div>
+        <script>
+            $("#configurator_extensions").modal("show");
+        </script>
+    {% endif %}
 
     <div class="row-fluid">
         <div class="span12">
@@ -283,12 +316,6 @@
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<script src="{{ theme_static('bootstrap/js/bootstrap.min.js') }}"/></script>
-<script src="{{ theme_static('bootstrap/js/bootstrap-button.js') }}"/></script>
-<script src="{{ theme_static('bootstrap/js/bootstrap-dropdown.js') }}"/></script>
-<script src="{{ theme_static('bootstrap/js/bootstrap-alert.js') }}"/></script>
-
 {% endblock %}
 {% endblock %}
 </body>
