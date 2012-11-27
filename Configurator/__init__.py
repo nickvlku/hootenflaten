@@ -16,5 +16,5 @@ class Configurator(object):
 
     def init_app(self, app):
         self.app = app
+        from .views import *
         app.register_blueprint(configurator_app, url_prefix="/_configure")
-
