@@ -1,4 +1,5 @@
 import datetime
+from flask import render_template
 from Configurator.models import ConfigurationDatabaseSetting
 from flask_login import current_user
 
@@ -10,6 +11,10 @@ class ConfigurationSetting(object):
         self.extension = None
         self.value_set = False
         self.pretty_name = pretty_name
+        self.name = None
+
+    def get_field_template(self):
+        return None
 
     def get_value(self):
         if self.value_set:
@@ -21,7 +26,13 @@ class ConfigurationSetting(object):
         self.value_set = True
         self.value = value
 
-    def to_html(self, name, html='<label for="%s">%s</label><input type="text" name="%s" value="%s"/>'):
+    def to_html(self, name, html=None, template=None):
+        if template is None:
+            template = self.get_field_template()
+
+        if template is None and html is None:
+            html = '<label for="%s">%s</label><input type="text" name="%s" value="%s"/>'
+
         if self.value is not None:
             field = self.value
         else:
@@ -34,10 +45,22 @@ class ConfigurationSetting(object):
         else:
             pretty_name = name
 
-        return html % (name, pretty_name, name, field)
+        if template is not None:
+            return template
+        else:
+            return html % (name, pretty_name, name, field)
 
-class StringSetting(ConfigurationSetting):
+class HootenflatenStyleConfigurationSetting(ConfigurationSetting):
+    def get_field_template(self):
+        return render_template("configurator/form_fields/StringSetting.html",
+            pretty_name = self.pretty_name,
+            form_field = self.name,
+            value = self.get_value()
+        )
+
+class StringSetting(HootenflatenStyleConfigurationSetting):
     pass
+
 
 class ConfigurationBase(type):
     def __new__(cls, name, bases, attrs):
@@ -58,8 +81,11 @@ class Configuration(object):
     def __init__(self, *args, **kwargs):
         self.__extension__ = self.__module__.split(".")[0]
         for attr_name, attr_value in self.__class__.__dict__.items():
+
             if not attr_name.startswith('_'):
                 if isinstance(attr_value, ConfigurationSetting):
+                    attr_value.name = attr_name
+
                     # first we check if there are corresponding values in the database
                     config = ConfigurationDatabaseSetting.query.filter_by(extension=self.__extension__, key_name=attr_name).first()
 
@@ -93,9 +119,9 @@ class Configuration(object):
         else:
             return ret_val
 
-    def field_to_html(self, field_name):
+    def field_to_html(self, field_name, html=None, template=None):
         actual_field = self.__fields__.get(field_name)
-        return actual_field.to_html(field_name)
+        return actual_field.to_html(field_name, html=template, template=template)
 
     def save(self):
         from base.database import db
