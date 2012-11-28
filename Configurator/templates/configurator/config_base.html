@@ -79,7 +79,7 @@
                         <li class="nav-header">Extension Settings</li>
                         {%  for ext in ExtensionManager.get_extensions().values() %}
                         {% if ext.needs_configuration %}
-                        <li><a href="#">{{ ext.package.__meta__.Title }}</a></li>
+                        <li {% if ext.extension_name == extension.extension_name %} class="active" {% endif %}><a href="{{ url_for('configurator.extension_setting', extension=ext.extension_name)}}">{{ ext.package.__meta__.Title }}</a></li>
                         {% endif %}
                         {% endfor %}
                         <li class="nav-header"><a href="#">Statistics</a></li>

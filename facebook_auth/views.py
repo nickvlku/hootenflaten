@@ -16,9 +16,9 @@ from flask_login import login_required
 from facebook_auth.models import FacebookUser
 from hootenflaten_auth.forms import RegistrationForm
 
-fb_auth = Blueprint('fb_auth', __name__, template_folder='templates')
+facebook_auth = Blueprint('facebook_auth', __name__, template_folder='templates')
 
-@fb_auth.route('/register', methods=['GET'])
+@facebook_auth.route('/register', methods=['GET'])
 def register_facebook_account():
     if current_user.is_authenticated():
         return redirect(url_for('front_page'))
@@ -31,7 +31,7 @@ def register_facebook_account():
 
     return render('facebook_auth/confirm_fb.html', facebook_user=auth, form=registration_form)
 
-@fb_auth.route('/register', methods=['POST'])
+@facebook_auth.route('/register', methods=['POST'])
 def register_facebook_account_post():
     if current_user.is_authenticated():
         return redirect(url_for('front_page'))
@@ -73,7 +73,7 @@ def register_facebook_account_post():
 
     return redirect(url_for('root_views.front_page'))
 
-@fb_auth.route('/complete', methods=['GET'])
+@facebook_auth.route('/complete', methods=['GET'])
 def bounceback_get():
     args = dict(client_id=current_app.config.get('FACEBOOK_ID'), redirect_uri=request.base_url)
     try:
@@ -135,6 +135,6 @@ def bounceback_get():
 
 
 @login_required
-@fb_auth.route('/test', methods=['GET'])
+@facebook_auth.route('/test', methods=['GET'])
 def test():
     return "Hello you are logged in! -- %s" % current_user.username

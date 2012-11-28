@@ -1,6 +1,6 @@
 <div class="control-group">
     <label class="control-label" for="{{form_field}}">{{pretty_name}}</label>
     <div class="controls">
-        <input type="text" id="{{form_field}}" value="{{value}}" class="input-block-level">
+        <input type="text" id="{{form_field}}"  name="{{form_field}}" value="{% if value %}{{value}}{% endif %}" class="input-block-level">
     </div>
 </div>

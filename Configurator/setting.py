@@ -1,7 +1,9 @@
 import datetime
 from flask import render_template
+
 from Configurator.models import ConfigurationDatabaseSetting
 from flask_login import current_user
+from base.flask_extensions import hootenflaten_extension_manager
 
 class ConfigurationSetting(object):
     def __init__(self, required=False, default_value=None, pretty_name=None):
@@ -143,6 +145,11 @@ class Configuration(object):
 
             db.session.add(c)
             self.__field_to_config_objs__[value] = c
+
+        e = hootenflaten_extension_manager.EXTENSIONS.get(self.__extension__)
+        if not e.has_configuration:
+            # this breaks! why!
+            e.has_configuration = True
 
         db.session.commit()
 

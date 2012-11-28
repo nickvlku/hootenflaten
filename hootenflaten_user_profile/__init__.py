@@ -10,7 +10,9 @@ __meta__ = {
     ],
     'DefaultUrlPrefix': '/profile',
     'NeedsConfiguration' : True,
-    'DependsOn': [ 'hootenflaten_auth', ]
+    'DependsOn': [ 'hootenflaten_auth', ],
+    'ConfigClass': 'hootenflaten_user_profile.config.HootenflateUserProfileConfig'
+
 }
 
 from flask.blueprints import Blueprint

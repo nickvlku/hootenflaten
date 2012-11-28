@@ -3,7 +3,7 @@ __author__ = 'nick'
 __meta__ = {
     'Author': 'Nick Vlku <nick@vlku.com>',
     'Title': 'Facebook Authentication for Hootenflaten',
-    'BlueprintName': 'fb_auth',
+    'BlueprintName': 'facebook_auth',
     'Version': 0.1,
     'Description': 'Allow users to login into the site via Facebook',
     'ContextProcessors':  [
@@ -16,5 +16,5 @@ __meta__ = {
 
 }
 
-from .views import fb_auth
+from .views import facebook_auth
 
