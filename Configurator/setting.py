@@ -20,6 +20,17 @@ class ConfigurationSetting(object):
         self.value_set = True
         self.value = value
 
+    def to_html(self, name, html='<input type="text" name="%s" value="%s"/>'):
+        if self.value is not None:
+            field = self.value
+        else:
+            if self.default_value is not None:
+                field = self.default_value
+            else:
+                field = ""
+
+        return html % (name, field)
+
 class StringSetting(ConfigurationSetting):
     pass
 
@@ -76,6 +87,10 @@ class Configuration(object):
                 return None
         else:
             return ret_val
+
+    def field_to_html(self, field_name):
+        actual_field = self.__fields__.get(field_name)
+        return actual_field.to_html(field_name)
 
     def save(self):
         from base.database import db
