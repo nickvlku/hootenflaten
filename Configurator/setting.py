@@ -3,12 +3,13 @@ from Configurator.models import ConfigurationDatabaseSetting
 from flask_login import current_user
 
 class ConfigurationSetting(object):
-    def __init__(self, required=False, default_value=None):
+    def __init__(self, required=False, default_value=None, pretty_name=None):
         self.required = required
         self.default_value = default_value
         self.value = None
         self.extension = None
         self.value_set = False
+        self.pretty_name = pretty_name
 
     def get_value(self):
         if self.value_set:
@@ -20,7 +21,7 @@ class ConfigurationSetting(object):
         self.value_set = True
         self.value = value
 
-    def to_html(self, name, html='<input type="text" name="%s" value="%s"/>'):
+    def to_html(self, name, html='<label for="%s">%s</label><input type="text" name="%s" value="%s"/>'):
         if self.value is not None:
             field = self.value
         else:
@@ -28,8 +29,12 @@ class ConfigurationSetting(object):
                 field = self.default_value
             else:
                 field = ""
+        if self.pretty_name is not None:
+            pretty_name = self.pretty_name
+        else:
+            pretty_name = name
 
-        return html % (name, field)
+        return html % (name, pretty_name, name, field)
 
 class StringSetting(ConfigurationSetting):
     pass
