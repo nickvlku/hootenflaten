@@ -19,7 +19,7 @@ class HootenflatenExtensionManager(object):
         self.init_extensions()
         self.app.context_processor(self.context_processor)
 
-    def get_extensions(self, name):
+    def get_extensions(self):
         return self.EXTENSIONS
 
     def get_extensions_needing_config(self):
@@ -48,6 +48,8 @@ class HootenflatenExtensionManager(object):
                 self.app.logger.warn("%s needs configuration."  % e.__meta__.get('Title'))
                 self.EXTENSIONS_NEED_CONFIG[ext.extension_name] = ext
 
+            self.EXTENSIONS[e.__meta__["BlueprintName"]] = ext
+
             # let's import the models now so we can create them if they are there
             try:
                 mod_name = "%s.%s" % (ext.extension_name, e.__meta__['BlueprintName'])
@@ -74,7 +76,6 @@ class HootenflatenExtensionManager(object):
             blueprint = e.__dict__[e.__meta__['BlueprintName']]
             self.app.logger.info("Enabled Extension %s" % e.__meta__['Title'])
             self.app.register_blueprint(blueprint, url_prefix=e.__meta__['DefaultUrlPrefix'])
-            self.EXTENSIONS[e.__meta__["BlueprintName"]] = e
             self.register(e)
 
 
