@@ -5,8 +5,8 @@ from Configurator import configurator_app
 def extension_setting(extension):
     from base.flask_extensions import hootenflaten_extension_manager
     e = hootenflaten_extension_manager.EXTENSIONS.get(extension,None)
-
-    return render_template("configurator/main.html", extension=e)
+    meta_info = hootenflaten_extension_manager.EXTENSIONS_CLASS.get(extension, None)
+    return render_template("configurator/main.html", extension=e, meta_info=meta_info)
 
 
 @configurator_app.route('/settings/<extension>', methods=['POST'])
@@ -19,4 +19,5 @@ def extension_setting_post(extension):
             setattr(config, field, request.form.get(field))
     config.save()
 
-    return redirect(url_for("configurator.extension_setting", extension=extension))
+    meta_info = hootenflaten_extension_manager.EXTENSIONS_CLASS.get(extension, None)
+    return render_template("configurator/main.html", extension=e, meta_info=meta_info)

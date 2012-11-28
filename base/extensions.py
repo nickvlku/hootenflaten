@@ -7,6 +7,7 @@ class HootenflatenExtensionManager(object):
         self.app = app
         self.EXTENSIONS = {}
         self.EXTENSIONS_NEED_CONFIG = {}
+        self.EXTENSIONS_CLASS = {}
 
         if app is not None:
             self.init_app(app)
@@ -24,6 +25,9 @@ class HootenflatenExtensionManager(object):
 
     def get_extensions_needing_config(self):
         return self.EXTENSIONS_NEED_CONFIG
+
+    def get_meta_info_for_extension(self,name):
+        return self.EXTENSIONS_CLASS.get(name)
 
     def register(self,e):
         with self.app.app_context():
@@ -43,7 +47,7 @@ class HootenflatenExtensionManager(object):
                 db.session.add(ext)
                 db.session.commit()
 
-            ext.package = e
+            self.EXTENSIONS_CLASS[ext.extension_name] = e
             if ext.needs_configuration and not ext.has_configuration:
                 self.app.logger.warn("%s needs configuration."  % e.__meta__.get('Title'))
                 self.EXTENSIONS_NEED_CONFIG[ext.extension_name] = ext
@@ -71,7 +75,7 @@ class HootenflatenExtensionManager(object):
 
             # Let's now import the config for the extension if it has config
             if ext.needs_configuration:
-                config_class_name = ext.package.__meta__.get('ConfigClass', None)
+                config_class_name = self.EXTENSIONS_CLASS[ext.extension_name].__meta__.get('ConfigClass', None)
                 if config_class_name is not None:
                     module_name = ".".join(config_class_name.split(".")[:-1])
                     clazz_name = config_class_name.split(".")[-1]

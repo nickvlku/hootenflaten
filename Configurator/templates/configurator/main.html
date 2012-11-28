@@ -1,8 +1,8 @@
 {% extends 'configurator/config_base.html' %}
 {% block right_body %}
-    <h1>{{ extension.package.__meta__.Title }}</h1>
-    <h5>Version: {{ extension.package.__meta__.Version }}</h5>
-    <p>{{ extension.package.__meta__.Description }}</p>
+    <h1>{{ meta_info.__meta__.Title }}</h1>
+    <h5>Version: {{ meta_info.__meta__.Version }}</h5>
+    <p>{{ meta_info.__meta__.Description }}</p>
     {%  set config = extension.config() %}
     <hr/>
     <form class="form-horizontal" method="POST">

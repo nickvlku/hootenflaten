@@ -150,6 +150,7 @@ class Configuration(object):
         if not e.has_configuration:
             # this breaks! why!
             e.has_configuration = True
+            db.session.add(e)
 
         db.session.commit()
 
