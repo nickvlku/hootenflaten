@@ -69,6 +69,16 @@ class HootenflatenExtensionManager(object):
                 pass
 
 
+            # Let's now import the config for the extension if it has config
+            if ext.needs_configuration:
+                config_class_name = ext.package.__meta__.get('ConfigClass', None)
+                if config_class_name is not None:
+                    module_name = ".".join(config_class_name.split(".")[:-1])
+                    clazz_name = config_class_name.split(".")[-1]
+                    config_mod = importlib.import_module(module_name)
+
+                    ext.config = getattr(config_mod, clazz_name)
+
     def init_extensions(self):
         for extension in self.app.config['EXTENSIONS']:
 

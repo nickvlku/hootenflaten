@@ -1,4 +1,10 @@
 {% extends 'configurator/config_base.html' %}
 {% block right_body %}
-    Hi
+    <h1>{{ extension.package.__meta__.Title }}</h1>
+    <h5>Version: {{ extension.package.__meta__.Version }}</h5>
+    <p>{{ extension.package.__meta__.Description }}</p>
+    {%  set config = extension.config() %}
+    {% for config_field in config.get_fields() %}
+    {{ config.field_to_html(config_field)|safe }}
+    {% endfor  %}
 {% endblock %}

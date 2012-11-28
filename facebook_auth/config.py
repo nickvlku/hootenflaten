@@ -4,4 +4,5 @@ __author__ = 'nick'
 
 class FacebookAuthConfig(Configuration):
     access_token = StringSetting(pretty_name="Facebook Secret")
-    bounce_back_url = StringSetting(default_value="/facebook_auth/login")
+    bounce_back_url = StringSetting(default_value="/facebook_auth/login", pretty_name="Bounceback URL")
+

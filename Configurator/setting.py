@@ -120,6 +120,9 @@ class Configuration(object):
 
         db.session.commit()
 
+    def get_fields(self):
+        return self.__fields__.keys()
+
 
 class TestConfiguration(Configuration):
     full_name = StringSetting()

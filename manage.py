@@ -21,8 +21,8 @@ def createall():
 def dropall():
     "Drops all database tables"
     from base.database import db
-    from base.extensions import HootenflatenExtensionManager
-    HootenflatenExtensionManager(app)
+    from base.flask_extensions import hootenflaten_extension_manager
+    hootenflaten_extension_manager.init_app(app)
     if prompt_bool("Are you sure ? You will lose all your data !"):
         db.drop_all()
 
@@ -30,6 +30,7 @@ def dropall():
 if __name__ == "__main__":
     from base.extensions import HootenflatenExtensionManager
     if sys.argv[1] != 'createall':
-        HootenflatenExtensionManager(app)
+        from base.flask_extensions import hootenflaten_extension_manager
+        hootenflaten_extension_manager.init_app(app)
     manager.run()
 

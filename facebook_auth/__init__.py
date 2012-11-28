@@ -11,9 +11,10 @@ __meta__ = {
     ],
     'DefaultUrlPrefix': '/facebook',
     'NeedsConfiguration' : True,
-    'DependsOn': [ 'hootenflaten_auth', ]
+    'DependsOn': [ 'hootenflaten_auth', ],
+    'ConfigClass': 'facebook_auth.config.FacebookAuthConfig'
+
 }
 
 from .views import fb_auth
-
 
