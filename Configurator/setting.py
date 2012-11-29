@@ -15,8 +15,6 @@ class ConfigurationSetting(object):
         self.pretty_name = pretty_name
         self.name = None
 
-
-
     def get_field_template(self):
         return None
 
@@ -89,6 +87,19 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
         super(ComplexSetting, self).__init__(required=required, default_value=default_value, pretty_name=pretty_name)
         self.field_dict = field_dict
 
+    def get_value(self):
+        return self.field_dict
+
+    def get_specific_value(self, key):
+        value = self.field_dict.get(key,None)
+        return value.get_value()
+
+    def set_value(self, field_dict):
+        self.field_dict = field_dict
+
+    def set_specific_value(self, key, value):
+        field = self.field_dict.get(key)
+        field.set_value(value)
 
 
 class ConfigurationBase(type):
