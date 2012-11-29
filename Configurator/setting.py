@@ -15,6 +15,8 @@ class ConfigurationSetting(object):
         self.pretty_name = pretty_name
         self.name = None
 
+
+
     def get_field_template(self):
         return None
 
@@ -54,7 +56,8 @@ class ConfigurationSetting(object):
 
 class HootenflatenStyleConfigurationSetting(ConfigurationSetting):
     def get_field_template(self):
-        return render_template("configurator/form_fields/StringSetting.html",
+
+        return render_template("configurator/form_fields/%s.html" % self.__class__.__name__,
             pretty_name = self.pretty_name,
             form_field = self.name,
             value = self.get_value()
@@ -63,11 +66,36 @@ class HootenflatenStyleConfigurationSetting(ConfigurationSetting):
 class StringSetting(HootenflatenStyleConfigurationSetting):
     pass
 
+class ListSetting(HootenflatenStyleConfigurationSetting):
+
+    def __init__(self, field, required=False, default_value=None, pretty_name=None):
+        super(ListSetting, self).__init__(required=required, default_value=default_value, pretty_name=pretty_name)
+        self.field = field
+        self.field_values = []
+
+    def get_value(self):
+        return self.field_values
+
+    def add_value(self, field_value):
+        new_field = self.field.__class__()
+        new_field.set_value(field_value)
+        self.field_values.append(new_field)
+
+    def set_value(self, value):
+        self.field_values = value
+
+class ComplexSetting(HootenflatenStyleConfigurationSetting):
+    def __init__(self, field_dict, required=False, default_value=None, pretty_name=None):
+        super(ComplexSetting, self).__init__(required=required, default_value=default_value, pretty_name=pretty_name)
+        self.field_dict = field_dict
+
+
 
 class ConfigurationBase(type):
     def __new__(cls, name, bases, attrs):
         super_new = super(ConfigurationBase, cls).__new__
         config_fields = {
+            '__field_order__' : [],
             '__fields__' : {},
             '__field_values__' : {},
             '__field_to_config_objs__': {},
@@ -82,6 +110,18 @@ class Configuration(object):
 
     def __init__(self, *args, **kwargs):
         self.__extension__ = self.__module__.split(".")[0]
+        order_explicit = False
+        self.__field_order__ = []
+        self.__fields__ = {}
+        self.__field_values__ = {}
+        self.__field_to_config_objs__ = {}
+
+        if 'Meta' in self.__class__.__dict__:
+            meta_attr = getattr(self.__class__, 'Meta')
+            if hasattr(meta_attr, 'order'):
+                self.__field_order__ = getattr(meta_attr,'order')
+                order_explicit = True
+
         for attr_name, attr_value in self.__class__.__dict__.items():
 
             if not attr_name.startswith('_'):
@@ -102,6 +142,13 @@ class Configuration(object):
                         default_value = self.__fields__[attr_name].default_value
                         self.__field_values__[attr_name] = default_value
 
+                    if not order_explicit:
+                        self.__field_order__.append(attr_name)
+
+                elif attr_name == 'Meta':
+                    if hasattr(attr_value, 'order'):
+                        self.__field_order__ = getattr(attr_value,'order')
+
     def __setattr__(self, name, value, *args, **kwargs):
         if self.__fields__.has_key(name):
             v = self.__fields__[name].set_value(value)
@@ -115,7 +162,7 @@ class Configuration(object):
         ret_val = super(Configuration,self).__getattribute__(name, *args, **kwargs)
         if isinstance(ret_val,ConfigurationSetting):
             if self.__fields__.has_key(name):
-                return self.__fields__[name].get_value()
+                return self.__fields__[name]
             else:
                 return None
         else:
@@ -148,14 +195,14 @@ class Configuration(object):
 
         e = hootenflaten_extension_manager.EXTENSIONS.get(self.__extension__)
         if not e.has_configuration:
-            # this breaks! why!
             e.has_configuration = True
             db.session.add(e)
 
         db.session.commit()
 
     def get_fields(self):
-        return self.__fields__.keys()
+        print self.__field_order__
+        return self.__field_order__
 
 
 class TestConfiguration(Configuration):

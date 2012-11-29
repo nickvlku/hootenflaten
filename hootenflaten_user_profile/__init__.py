@@ -11,7 +11,7 @@ __meta__ = {
     'DefaultUrlPrefix': '/profile',
     'NeedsConfiguration' : True,
     'DependsOn': [ 'hootenflaten_auth', ],
-    'ConfigClass': 'hootenflaten_user_profile.config.HootenflateUserProfileConfig'
+    'ConfigClass': 'hootenflaten_user_profile.config.HootenflatenUserProfileConfig'
 
 }
 
