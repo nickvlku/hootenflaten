@@ -6,14 +6,47 @@ from flask_login import current_user
 from base.flask_extensions import hootenflaten_extension_manager
 
 class ConfigurationSetting(object):
-    def __init__(self, required=False, default_value=None, pretty_name=None):
+    def __init__(self, required=False, default_value=None, pretty_name=None, name=None):
         self.required = required
         self.default_value = default_value
         self.value = None
         self.extension = None
         self.value_set = False
         self.pretty_name = pretty_name
-        self.name = None
+        self.name = name
+        self.config_setting = None
+
+    def load_from_database(self):
+        if self.name is not None:
+            self.config_setting = ConfigurationDatabaseSetting.query.filter_by(extension=self.extension, key_name=self.name).first()
+            return self.config_setting
+        else:
+            return None
+
+    def save(self, commit=False):
+        if self.name is None:
+            raise ValueError("Name is set to none so we can't save.  Was this setting instantiated in a Configuration class?")
+        from base.database import db
+
+        if self.config_setting is None:
+            self.config_setting = self.load_from_database()
+            if self.config_setting is None:
+                self.config_setting = ConfigurationDatabaseSetting()
+
+        self.config_setting.extension = self.extension
+        self.config_setting.key_name = self.name
+        self.config_setting.key_value = self.value
+        self.config_setting.default_set = False # has to change
+        self.config_setting.field_set_on = datetime.datetime.utcnow()
+        try:
+            self.config_setting.field_set_by = current_user.id
+        except:
+            pass
+
+        db.session.add(self.config_setting)
+
+        if commit:
+            db.session.commit()
 
     def get_field_template(self):
         return None
@@ -52,6 +85,7 @@ class ConfigurationSetting(object):
         else:
             return html % (name, pretty_name, name, field)
 
+
 class HootenflatenStyleConfigurationSetting(ConfigurationSetting):
     def get_field_template(self):
 
@@ -84,8 +118,8 @@ class ListSetting(HootenflatenStyleConfigurationSetting):
 
 class ComplexSetting(HootenflatenStyleConfigurationSetting):
     def __init__(self, field_dict, required=False, default_value=None, pretty_name=None):
-        super(ComplexSetting, self).__init__(required=required, default_value=default_value, pretty_name=pretty_name)
         self.field_dict = field_dict
+        super(ComplexSetting, self).__init__(required=required, default_value=default_value, pretty_name=pretty_name)
 
     def get_value(self):
         return self.field_dict
@@ -94,12 +128,64 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
         value = self.field_dict.get(key,None)
         return value.get_value()
 
+    def __setattr__(self, name, value):
+        try:
+            if name in self.field_dict:
+                self.field_dict.get(name).set_value(value)
+            else:
+                return super(ComplexSetting, self).__setattr__(name, value)
+        except:
+            super(ComplexSetting, self).__setattr__(name, value)
+            
     def set_value(self, field_dict):
         self.field_dict = field_dict
 
     def set_specific_value(self, key, value):
         field = self.field_dict.get(key)
         field.set_value(value)
+
+    def load_from_database(self):
+        pass
+
+    def save(self, commit=False):
+        if self.name is None:
+            raise ValueError("Name is set to none so we can't save.  Was this setting instantiated in a Configuration class?")
+
+        field_names = []
+
+        from base.database import db
+
+        for key in self.field_dict:
+            field_names.append("%s.%s" % (self.name, key))
+            field = self.field_dict.get(key)
+            field_config = ConfigurationDatabaseSetting()
+            field_config.extension = self.extension
+            field_config.key_name = "%s.%s" % (self.name, key)
+            field_config.key_value = field.get_value()
+            field_config.default_set = False
+            field_config.field_set_on = datetime.datetime.utcnow()
+            try:
+                field_config.field_set_by = current_user.id
+            except:
+                pass
+
+            db.session.add(field_config)
+
+        master_config = ConfigurationDatabaseSetting()
+        master_config.extension = self.extension
+        master_config.key_name = self.name
+        master_config.key_value = "|".join(field_names)
+        master_config.default_set = False
+        master_config.field_set_on = datetime.datetime.utcnow()
+        try:
+            master_config.field_set_by = current_user.id
+        except:
+            pass
+
+        db.session.add(master_config)
+
+        if commit:
+            db.session.commit()
 
 
 class ConfigurationBase(type):
@@ -109,7 +195,6 @@ class ConfigurationBase(type):
             '__field_order__' : [],
             '__fields__' : {},
             '__field_values__' : {},
-            '__field_to_config_objs__': {},
             '__extension__': None
         }
         attrs.update(config_fields)
@@ -125,7 +210,6 @@ class Configuration(object):
         self.__field_order__ = []
         self.__fields__ = {}
         self.__field_values__ = {}
-        self.__field_to_config_objs__ = {}
 
         if 'Meta' in self.__class__.__dict__:
             meta_attr = getattr(self.__class__, 'Meta')
@@ -138,14 +222,13 @@ class Configuration(object):
             if not attr_name.startswith('_'):
                 if isinstance(attr_value, ConfigurationSetting):
                     attr_value.name = attr_name
-
+                    attr_value.extension = self.__extension__
                     # first we check if there are corresponding values in the database
-                    config = ConfigurationDatabaseSetting.query.filter_by(extension=self.__extension__, key_name=attr_name).first()
+                    config = attr_value.load_from_database()
 
                     if config is not None:
                         self.__fields__[attr_name] = attr_value
                         self.__fields__[attr_name].set_value(config.key_value)
-                        self.__field_to_config_objs__[attr_name] = config
                         self.__field_values__[attr_name] = config.key_value
                     else:
                         # if not we initialize via default values
@@ -184,26 +267,11 @@ class Configuration(object):
         return actual_field.to_html(field_name, html=template, template=template)
 
     def save(self):
+        for field_name in self.__fields__:
+            field = self.__fields__.get(field_name)
+            field.save(commit=False)
+
         from base.database import db
-
-        for value in self.__field_values__:
-            if value in self.__field_to_config_objs__:
-                c = self.__field_to_config_objs__.get(value)
-            else:
-                c = ConfigurationDatabaseSetting()
-            c.extension = self.__extension__
-            c.key_name = value
-            c.key_value = self.__field_values__.get(value)
-            c.default_set = False # has to change
-            c.field_set_on = datetime.datetime.utcnow()
-            try:
-                c.field_set_by = current_user.id
-            except:
-                pass
-
-            db.session.add(c)
-            self.__field_to_config_objs__[value] = c
-
         e = hootenflaten_extension_manager.EXTENSIONS.get(self.__extension__)
         if not e.has_configuration:
             e.has_configuration = True
@@ -212,7 +280,6 @@ class Configuration(object):
         db.session.commit()
 
     def get_fields(self):
-        print self.__field_order__
         return self.__field_order__
 
 
