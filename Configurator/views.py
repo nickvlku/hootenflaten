@@ -14,10 +14,11 @@ def extension_setting_post(extension):
     from base.flask_extensions import hootenflaten_extension_manager
     e = hootenflaten_extension_manager.EXTENSIONS.get(extension,None)
     config = e.config()
-    for field in config.get_fields():
-        if field in request.form:
-            setattr(config, field, request.form.get(field))
+    for field_name in config.get_fields():
+        field = getattr(config, field_name)
+        field.save_from_form(request.form)
     config.save()
 
     meta_info = hootenflaten_extension_manager.EXTENSIONS_CLASS.get(extension, None)
-    return render_template("configurator/main.html", extension=e, meta_info=meta_info)
+
+    return redirect(url_for(".extension_setting", extension=e.extension_name))

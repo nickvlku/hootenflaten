@@ -16,9 +16,16 @@ class ConfigurationSetting(object):
         self.name = name
         self.config_setting = None
 
+    def save_from_form(self, form):
+        if self.name in form:
+            self.value = form.get(self.name)
+
     def load_from_database(self):
         if self.name is not None:
             self.config_setting = ConfigurationDatabaseSetting.query.filter_by(extension=self.extension, key_name=self.name).first()
+            if self.config_setting is not None:
+                self.value_set = True
+                self.value = self.config_setting.key_value
             return self.config_setting
         else:
             return None
@@ -62,6 +69,8 @@ class ConfigurationSetting(object):
         self.value = value
 
     def to_html(self, name, html=None, template=None):
+        if name is not None:
+            self.name = name
 
         if template is None:
             template = self.get_field_template()
@@ -126,11 +135,19 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
         self.field_dict_configs = dict()
         super(ComplexSetting, self).__init__(required=required, default_value=default_value, pretty_name=pretty_name)
 
+    def save_from_form(self, form):
+        for field in self.field_dict:
+            full_form_name = "%s.%s" % (self.name, field)
+            if full_form_name in form:
+                self.field_dict[field].set_value(form.get(full_form_name))
+
+
     def to_html(self, name, html=None, template=None):
 
         field_html = []
-        for field in self.field_dict:
-            field_html.append(self.field_dict.get(field).to_html(name, html, template))
+        for field_name in self.field_dict:
+            actual_field = self.field_dict.get(field_name)
+            field_html.append(actual_field.to_html("%s.%s" % (self.name, field_name), html, template))
 
         self.template_meta['field_html'] = ''.join(field_html)
 
