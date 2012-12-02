@@ -119,6 +119,7 @@ class ListSetting(HootenflatenStyleConfigurationSetting):
 class ComplexSetting(HootenflatenStyleConfigurationSetting):
     def __init__(self, field_dict, required=False, default_value=None, pretty_name=None):
         self.field_dict = field_dict
+        self.field_dict_configs = dict()
         super(ComplexSetting, self).__init__(required=required, default_value=default_value, pretty_name=pretty_name)
 
     def get_value(self):
@@ -136,7 +137,13 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
                 return super(ComplexSetting, self).__setattr__(name, value)
         except:
             super(ComplexSetting, self).__setattr__(name, value)
-            
+
+    def __getattr__(self, name):
+        if name in self.field_dict:
+            return self.field_dict.get(name).get_value()
+        else:
+            return None
+
     def set_value(self, field_dict):
         self.field_dict = field_dict
 
@@ -145,7 +152,19 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
         field.set_value(value)
 
     def load_from_database(self):
-        pass
+        if self.name is not None:
+            self.config_setting = ConfigurationDatabaseSetting.query.filter_by(extension=self.extension, key_name=self.name).first()
+        else:
+            return None
+        if self.config_setting is not None:
+            fields = self.config_setting.key_value.split("|")
+            for field in fields:
+                config = ConfigurationDatabaseSetting.query.filter_by(extension=self.extension, key_name="%s.%s" % (self.name, field)).first()
+                if config is not None:
+                    self.field_dict[field].set_value(config.key_value)
+                    self.field_dict_configs[field] = config
+
+        return self.config_setting
 
     def save(self, commit=False):
         if self.name is None:
@@ -156,11 +175,15 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
         from base.database import db
 
         for key in self.field_dict:
-            field_names.append("%s.%s" % (self.name, key))
+            field_names.append(key)
+            if key in self.field_dict_configs:
+                field_config = self.field_dict_configs.get(key)
+            else:
+                field_config = ConfigurationDatabaseSetting()
+                field_config.extension = self.extension
+                field_config.key_name = "%s.%s" % (self.name, key)
+
             field = self.field_dict.get(key)
-            field_config = ConfigurationDatabaseSetting()
-            field_config.extension = self.extension
-            field_config.key_name = "%s.%s" % (self.name, key)
             field_config.key_value = field.get_value()
             field_config.default_set = False
             field_config.field_set_on = datetime.datetime.utcnow()
@@ -169,6 +192,7 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
             except:
                 pass
 
+            self.field_dict_configs[field] = field_config
             db.session.add(field_config)
 
         master_config = ConfigurationDatabaseSetting()
@@ -228,7 +252,6 @@ class Configuration(object):
 
                     if config is not None:
                         self.__fields__[attr_name] = attr_value
-                        self.__fields__[attr_name].set_value(config.key_value)
                         self.__field_values__[attr_name] = config.key_value
                     else:
                         # if not we initialize via default values
