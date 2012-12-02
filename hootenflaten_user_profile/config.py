@@ -3,8 +3,8 @@ from Configurator.setting import Configuration, StringSetting, ListSetting, Comp
 __author__ = 'nick'
 
 class HootenflatenUserProfileConfig(Configuration):
-    profile_fields = ListSetting(
-        field=StringSetting(pretty_name="Field Wanted")
+    love_it = ListSetting(
+        field =StringSetting(pretty_name="Field Wanted")
     )
     complicated_test = ComplexSetting(
         field_dict=dict(

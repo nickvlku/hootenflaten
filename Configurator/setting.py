@@ -124,10 +124,61 @@ class ListSetting(HootenflatenStyleConfigurationSetting):
     def add_value(self, field_value):
         new_field = self.field.__class__()
         new_field.set_value(field_value)
+        new_field.name = self.name
+        new_field.extension = self.extension
         self.field_values.append(new_field)
 
     def set_value(self, value):
         self.field_values = value
+
+
+    def load_from_database(self):
+        if self.name is not None:
+            self.config_setting = ConfigurationDatabaseSetting.query.filter_by(extension=self.extension, key_name=self.name).first()
+            if self.config_setting is not None:
+                i = 0
+                while i < int(self.config_setting.key_value):
+                    field = ConfigurationDatabaseSetting.query.filter_by(extension=self.extension, key_name="%s|%s" % (self.name,i)).first()
+                    self.add_value(field.key_value)
+                    i = i+1
+            return self.config_setting
+        else:
+            return None
+
+    def save(self, commit=False):
+        if self.name is None:
+            raise ValueError("Name is set to none so we can't save.  Was this setting instantiated in a Configuration class?")
+
+        from base.database import db
+        i = 0
+        for field_value in self.field_values:
+            if "|" not in field_value.name:
+                field_value.name = "%s|%s" % (field_value.name, i)
+            field_value.save()
+            i = i + 1
+
+        if self.config_setting is None:
+            master_config = ConfigurationDatabaseSetting()
+            master_config.extension = self.extension
+            master_config.key_name = self.name
+        else:
+            master_config = self.config_setting
+
+        master_config.key_value = i
+        master_config.default_set = False
+        master_config.field_set_on = datetime.datetime.utcnow()
+        try:
+            master_config.field_set_by = current_user.id
+        except:
+            pass
+
+        self.config_setting = master_config
+
+        db.session.add(master_config)
+
+        if commit:
+            db.session.commit()
+
 
 class ComplexSetting(HootenflatenStyleConfigurationSetting):
     def __init__(self, field_dict, required=False, default_value=None, pretty_name=None):
