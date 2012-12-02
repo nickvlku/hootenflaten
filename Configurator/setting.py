@@ -62,6 +62,7 @@ class ConfigurationSetting(object):
         self.value = value
 
     def to_html(self, name, html=None, template=None):
+
         if template is None:
             template = self.get_field_template()
 
@@ -87,12 +88,15 @@ class ConfigurationSetting(object):
 
 
 class HootenflatenStyleConfigurationSetting(ConfigurationSetting):
+    template_meta = dict()
+
     def get_field_template(self):
 
         return render_template("configurator/form_fields/%s.html" % self.__class__.__name__,
             pretty_name = self.pretty_name,
             form_field = self.name,
-            value = self.get_value()
+            value = self.get_value(),
+            misc = self.template_meta
         )
 
 class StringSetting(HootenflatenStyleConfigurationSetting):
@@ -121,6 +125,25 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
         self.field_dict = field_dict
         self.field_dict_configs = dict()
         super(ComplexSetting, self).__init__(required=required, default_value=default_value, pretty_name=pretty_name)
+
+    def to_html(self, name, html=None, template=None):
+
+        field_html = []
+        for field in self.field_dict:
+            field_html.append(self.field_dict.get(field).to_html(name, html, template))
+
+        self.template_meta['field_html'] = ''.join(field_html)
+
+        if template is None:
+            template = self.get_field_template()
+
+        if template is None and html is None:
+            html = '%s'
+
+        if template is not None:
+            return template
+        else:
+            return html % self.template_meta.get('field_html')
 
     def get_value(self):
         return self.field_dict
