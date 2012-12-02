@@ -194,10 +194,13 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
 
             self.field_dict_configs[field] = field_config
             db.session.add(field_config)
+        if self.config_setting is None:
+            master_config = ConfigurationDatabaseSetting()
+            master_config.extension = self.extension
+            master_config.key_name = self.name
+        else:
+            master_config = self.config_setting
 
-        master_config = ConfigurationDatabaseSetting()
-        master_config.extension = self.extension
-        master_config.key_name = self.name
         master_config.key_value = "|".join(field_names)
         master_config.default_set = False
         master_config.field_set_on = datetime.datetime.utcnow()
@@ -206,10 +209,13 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
         except:
             pass
 
+        self.config_setting = master_config
+
         db.session.add(master_config)
 
         if commit:
             db.session.commit()
+
 
 
 class ConfigurationBase(type):
