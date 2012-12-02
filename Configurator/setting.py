@@ -122,7 +122,9 @@ class ListSetting(HootenflatenStyleConfigurationSetting):
         return self.field_values
 
     def add_value(self, field_value):
-        new_field = self.field.__class__()
+        cls = type(self.field.__class__.__name__, (self.field.__class__,), dict(self.field.__dict__))
+
+        new_field = cls()
         new_field.set_value(field_value)
         new_field.name = self.name
         new_field.extension = self.extension
@@ -235,8 +237,10 @@ class ComplexSetting(HootenflatenStyleConfigurationSetting):
         else:
             return None
 
-    def set_value(self, field_dict):
-        self.field_dict = field_dict
+    def set_value(self, value_dict):
+        for key in value_dict:
+            if key in self.field_dict:
+                self.field_dict.get(key).set_value(value_dict.get(key))
 
     def set_specific_value(self, key, value):
         field = self.field_dict.get(key)
